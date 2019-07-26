@@ -98,6 +98,13 @@
                             label="タイトル"
                             />
                     <el-table-column
+                            label="画像"
+                            >
+                        <template slot-scope="scope">
+                            <img :src="scope.row.Item.mediumImageUrl" />
+                        </template>
+                    </el-table-column>
+                    <el-table-column
                             prop="operation"
                             label="Ops"
                             
@@ -106,7 +113,7 @@
                             <el-button
                                     size="mini"
                                     type="danger"
-                                    @click="deleteCurrency(scope.row.isbn)">読んだ本を追加</el-button>
+                                    @click="deleteCurrency(scope.row.isbn)">読んだ本として追加</el-button>
                         </template>
                     </el-table-column>
                 </el-table>            
