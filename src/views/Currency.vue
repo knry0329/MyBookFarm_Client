@@ -42,7 +42,7 @@
          <el-col :span="24">
             <el-card class="box-card box-card-wrapper">
                 <div slot="header">
-                    <span>ISBN追加</span>
+                    <span>書籍入力</span>
                 </div>
                 <el-row class="row-wrapper">
                     <el-col :span="12">
@@ -51,12 +51,12 @@
                     <el-col :span="12">
                         <el-input
                                 v-model="request.bookName"
-                                placeholder="New Name..."
+                                placeholder="本のタイトルを入力"
                                 clearable>
                         </el-input>
                     </el-col>
                 </el-row>
-                <el-row class="row-wrapper">
+                <!-- <el-row class="row-wrapper">
                     <el-col :span="12">
                         <span>isbn</span>
                     </el-col>
@@ -67,7 +67,7 @@
                                 clearable>
                         </el-input>
                     </el-col>
-                </el-row>
+                </el-row> -->
                 <el-row class="row-wrapper">
                     <el-col :span="24">
                         <el-button
@@ -86,13 +86,29 @@
                         :data="searchedBookList"
                         style="width: 100%">
                     <el-table-column
-                            prop="summary.author"
+                            prop="Item.isbn"
+                            label="ISBNコード"
+                            />
+                    <el-table-column
+                            prop="Item.author"
                             label="著者"
                             />
                     <el-table-column
-                            prop="summary.title"
+                            prop="Item.title"
                             label="タイトル"
                             />
+                    <el-table-column
+                            prop="operation"
+                            label="Ops"
+                            
+                            align="left">
+                        <template slot-scope="scope">
+                            <el-button
+                                    size="mini"
+                                    type="danger"
+                                    @click="deleteCurrency(scope.row.isbn)">読んだ本に追加</el-button>
+                        </template>
+                    </el-table-column>
                 </el-table>            
             </el-card>
         </el-col>
@@ -145,6 +161,7 @@
 
 import axios from 'axios'
 import SubHeader from '../views/SubHeader'
+import bookApiConfig from '../config/bookapi'
 
 export default {
   name: 'Currency',
@@ -191,10 +208,16 @@ export default {
     },
       searchBook: async function () {
       // const url = 'https://www.googleapis.com/books/v1/volumes?q=' + this.request.bookName
-      const url = 'https://api.openbd.jp/v1/get?isbn=' + this.request.isbn
+      const url = 
+      bookApiConfig.url
+      + '?applicationId=' 
+      + bookApiConfig.appKey
+      + '&title='
+      + this.request.bookName
+      console.log(url)
       const res = await axios.get(url)
-      this.searchedBookList = res.data
-      console.log(res.data.length)
+      this.searchedBookList = res.data.Items
+      console.log(res)
       this.request.bookName = undefined
       this.request.isbn = undefined
     }
