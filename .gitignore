@@ -21,4 +21,4 @@ yarn-error.log*
 *.sw?
 
 #knry0329
-firebase.js
+src/config/
