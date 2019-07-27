@@ -1,7 +1,7 @@
 <template>
     <el-row>
       <sub-header/>
-         <el-col :span="24">
+         <!-- <el-col :span="24">
             <el-card class="box-card box-card-wrapper">
                 <div slot="header">
                     <span>新規通貨追加</span>
@@ -38,7 +38,7 @@
                     </el-col>
                 </el-row>
             </el-card>
-        </el-col>
+        </el-col> -->
          <el-col :span="24">
             <el-card class="box-card box-card-wrapper">
                 <div slot="header">
@@ -50,7 +50,7 @@
                     </el-col>
                     <el-col :span="12">
                         <el-input
-                                v-model="request.bookName"
+                                v-model="bookRequest.bookName"
                                 placeholder="本のタイトルを入力"
                                 clearable>
                         </el-input>
@@ -113,7 +113,7 @@
                             <el-button
                                     size="mini"
                                     type="danger"
-                                    @click="deleteCurrency(scope.row.isbn)">読んだ本として追加</el-button>
+                                    @click="registbook(scope.row.Item.isbn)">読んだ本として追加</el-button>
                         </template>
                     </el-table-column>
                 </el-table>            
@@ -178,8 +178,10 @@ export default {
       request: {
         name: undefined,
         symbol: undefined,
+      },
+      bookRequest: {
         bookName: undefined,
-        isbn: '9784047914742'
+        isbn: undefined
       },
       currencies: [],
       searchedBookList: []
@@ -220,14 +222,27 @@ export default {
       + '?applicationId=' 
       + bookApiConfig.appKey
       + '&title='
-      + this.request.bookName
+      + this.bookRequest.bookName
       console.log(url)
       const res = await axios.get(url)
       this.searchedBookList = res.data.Items
       console.log(res)
-      this.request.bookName = undefined
-      this.request.isbn = undefined
-    }
+      this.bookRequest.bookName = undefined
+      this.bookRequest.isbn = undefined
+    },
+    registbook: async function (isbn) {
+      this.bookRequest.isbn = isbn
+      this.bookRequest.address = 'xx@gmail.com'
+      await axios.post('http://localhost:8090/book', this.bookRequest)
+      await this.refresh()
+      this.$message({
+        showClose: true,
+        message: 'Add Currency Success!',
+        type: 'success'
+      })
+      this.bookRequest.isbn = undefined
+      this.bookRequest.address = undefined
+    },
   }
 }
 </script>
