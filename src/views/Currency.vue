@@ -1,6 +1,6 @@
 <template>
     <el-row>
-        <sub-header/>
+        <!-- <sub-header/> -->
         <!-- <el-col :span="24">
             <el-card class="box-card box-card-wrapper">
                 <div slot="header">
@@ -172,6 +172,8 @@
     import Navmenu from '../views/Navmenu'
     import bookApiConfig from '../config/bookapi'
 
+    import firebase from 'firebase'
+
     export default {
         name: 'Currency',
         components: { SubHeader,Navmenu },
@@ -182,7 +184,7 @@
                     symbol: undefined,
                 },
                 bookRequest: {
-                    bookName: undefined,
+                    uid: undefined,
                     isbn: undefined
                 },
                 currencies: [],
@@ -191,6 +193,8 @@
         },
         created: async function () {
             await this.refresh()
+            var user = firebase.auth().currentUser;
+            this.bookRequest.uid = user.uid
         },
         methods: {
             refresh: async function () {
@@ -234,7 +238,6 @@
             },
             registbook: async function (isbn) {
                 this.bookRequest.isbn = isbn
-                this.bookRequest.address = 'xx@gmail.com'
                 await axios.post('http://localhost:8090/book', this.bookRequest)
                 await this.refresh()
                 this.$message({
@@ -243,7 +246,6 @@
                     type: 'success'
                 })
                 this.bookRequest.isbn = undefined
-                this.bookRequest.address = undefined
             },
         }
     }
