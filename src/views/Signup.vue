@@ -10,45 +10,45 @@
 
         <el-button @click="signUp">Register</el-button>
         <p>Do you have an account?
-            <router-link to="/signin">sign in now!!</router-link>
+        <router-link to="/signin">sign in now!!</router-link>
         </p>
 
     </div>
 </template>
 
 <script>
-import firebase from 'firebase'
+    import firebase from 'firebase'
 
-export default {
-  name: 'Signup',
-  data () {
-    return {
-      username: undefined,
-      password: undefined
+    export default {
+        name: 'Signup',
+        data () {
+            return {
+                username: undefined,
+                password: undefined
+            }
+        },
+        methods: {
+            signUp: async function () {
+                await firebase.auth().createUserWithEmailAndPassword(this.username, this.password)
+                    .then(() => {
+                        this.username = undefined
+                        this.password = undefined
+                        this.$message({
+                            showClose: true,
+                            message: 'Register User Success!',
+                            type: 'success'
+                        })
+                    })
+                    .catch(error => {
+                        this.$message({
+                            showClose: true,
+                            message: error,
+                            type: 'error'
+                        })
+                    })
+            }
+        }
     }
-  },
-  methods: {
-    signUp: async function () {
-      await firebase.auth().createUserWithEmailAndPassword(this.username, this.password)
-        .then(() => {
-          this.username = undefined
-          this.password = undefined
-          this.$message({
-            showClose: true,
-            message: 'Register User Success!',
-            type: 'success'
-          })
-        })
-        .catch(error => {
-          this.$message({
-            showClose: true,
-            message: error,
-            type: 'error'
-          })
-        })
-    }
-  }
-}
 </script>
 
 <style scoped lang="scss">
