@@ -1,24 +1,24 @@
 <template>
     <el-row>
-        <navmenu/>
-        <el-col :span="24" v-if="searchedBookList.length > 0">
+        <navmenu :activeindex="4"/>
+        <el-col :span="24" v-if="bookList.length < 0">
             <el-card class="box-card">
                 <div slot="header" class="clearfix">
                     <span>My書籍</span>
                 </div>
                 <el-table
-                    :data="searchedBookList"
+                    :data="bookList"
                     style="width: 100%">
                     <el-table-column
-                        prop="Item.isbn"
+                        prop="isbn"
                         label="ISBNコード"
                     />
                     <el-table-column
-                        prop="Item.author"
+                        prop="isbn"
                         label="著者"
                     />
                     <el-table-column
-                        prop="Item.title"
+                        prop="isbn"
                         label="タイトル"
                     />
                     <el-table-column
@@ -52,9 +52,10 @@
     import axios from 'axios'
     import Navmenu from '../views/Navmenu'
     import bookApiConfig from '../config/bookapi'
+    import firebase from 'firebase'
 
     export default {
-        name: 'Currency',
+        name: 'MyBook',
         components: { Navmenu },
         data () {
             return {
@@ -62,16 +63,39 @@
                     bookName: undefined,
                     isbn: undefined
                 },
-                bookList: []
+                isbnList: [],
+                bookList: [],
+                uid:undefined
             }
         },
         created: async function () {
-            await this.refresh()
+            firebase.auth().onAuthStateChanged(async function(user) {
+                if(user) {
+                // const res = await axios.get('http://localhost:8090/book/'+currentUser.uid)
+                // this.bookList = await res.data.rbookUserList
+                // console.log(this.bookList)
+                this.uid = user.uid
+                await this.refresh(this.uid)
+                }
+            })
+            console.log(this.bookList)
+
+            // await this.refresh(user)
         },
         methods: {
-            refresh: async function () {
-                const res = await axios.get('http://localhost:8090/book')
-                this.bookList = res.data.currencies
+            refresh: async function (uid) {
+                // firebase.auth().onAuthStateChanged(async user => {
+                //     if(user) {
+                //         const res = await axios.get('http://localhost:8090/book/'+user.uid)
+                //         this.bookList =await res.data.rbookUserList
+                //         console.log('changed:::::' + this.bookList)
+                //     }
+                //     console.log(this.bookList)
+                // })
+                // console.log(this.bookList)
+                // var user = await firebase.auth().currentUser;
+                const res = await axios.get('http://localhost:8090/book/'+uid)
+                this.bookList = res.data.rbookUserList
             },
             addCurrency: async function () {
                 await axios.post('http://localhost:8090/', this.request)

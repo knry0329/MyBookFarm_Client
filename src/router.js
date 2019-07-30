@@ -38,6 +38,11 @@ let router = new Router({
       path: '/signin',
       name: 'signin',
       component: () => import(/* webpackChunkName: "singin" */ './views/Signin.vue')
+    },
+    {
+      path: '/mybook',
+      name: 'mybook',
+      component: () => import(/* webpackChunkName: "mybook" */ './views/MyBook.vue')
     }
   ]
 })

@@ -1,6 +1,6 @@
 <template>
     <el-menu
-        :default-active="activeIndex2"
+        :default-active="activeIndex"
         class="el-menu-demo"
         mode="horizontal"
         @select="handleSelect"
@@ -21,7 +21,7 @@
             </el-submenu>
         </el-submenu>
         <el-menu-item index="3" disabled>Info</el-menu-item>
-        <el-menu-item index="4"><a href="/mybook" target="_blank">mybook</a></el-menu-item>
+        <el-menu-item index="4"><a href="/mybook">mybook</a></el-menu-item>
         <el-menu-item index="5" @click="signout">Signout</el-menu-item>
     </el-menu>
 </template>
@@ -33,7 +33,6 @@
         data() {
             return {
                 activeIndex: '1',
-                activeIndex2: '1'
             };
         },
         methods: {

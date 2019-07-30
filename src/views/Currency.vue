@@ -193,8 +193,6 @@
         },
         created: async function () {
             await this.refresh()
-            var user = firebase.auth().currentUser;
-            this.bookRequest.uid = user.uid
         },
         methods: {
             refresh: async function () {
