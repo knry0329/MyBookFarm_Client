@@ -1,7 +1,7 @@
 <template>
     <el-row>
         <navmenu :activeindex="4"/>
-        <el-col :span="24" v-if="bookList.length < 0">
+        <el-col :span="24" >
             <el-card class="box-card">
                 <div slot="header" class="clearfix">
                     <span>My書籍</span>
@@ -10,15 +10,15 @@
                     :data="bookList"
                     style="width: 100%">
                     <el-table-column
-                        prop="isbn"
+                        prop="Item.isbn"
                         label="ISBNコード"
                     />
                     <el-table-column
-                        prop="isbn"
+                        prop="Item.author"
                         label="著者"
                     />
                     <el-table-column
-                        prop="isbn"
+                        prop="Item.title"
                         label="タイトル"
                     />
                     <el-table-column
@@ -28,7 +28,7 @@
                             <img :src="scope.row.Item.mediumImageUrl" />
                         </template>
                     </el-table-column>
-                    <el-table-column
+                    <!-- <el-table-column
                         prop="operation"
                         label="Ops"
                             
@@ -39,7 +39,7 @@
                                 type="danger"
                                 @click="registbook(scope.row.Item.isbn)">読んだ本として追加</el-button>
                         </template>
-                    </el-table-column>
+                    </el-table-column> -->
                 </el-table>            
             </el-card>
         </el-col>
@@ -65,70 +65,44 @@
                 },
                 isbnList: [],
                 bookList: [],
-                uid:undefined
+                user: {}
             }
         },
         created: async function () {
-            firebase.auth().onAuthStateChanged(async function(user) {
-                if(user) {
-                // const res = await axios.get('http://localhost:8090/book/'+currentUser.uid)
-                // this.bookList = await res.data.rbookUserList
-                // console.log(this.bookList)
-                this.uid = user.uid
-                await this.refresh(this.uid)
+            firebase.auth().onAuthStateChanged(user => {
+                this.user = user ? user : {}
+                console.log(this.user.uid)
+                if (user) {
+                    this.refresh(this.user.uid)
+                } else {
                 }
             })
-            console.log(this.bookList)
-
-            // await this.refresh(user)
         },
         methods: {
             refresh: async function (uid) {
-                // firebase.auth().onAuthStateChanged(async user => {
-                //     if(user) {
-                //         const res = await axios.get('http://localhost:8090/book/'+user.uid)
-                //         this.bookList =await res.data.rbookUserList
-                //         console.log('changed:::::' + this.bookList)
-                //     }
-                //     console.log(this.bookList)
-                // })
-                // console.log(this.bookList)
-                // var user = await firebase.auth().currentUser;
                 const res = await axios.get('http://localhost:8090/book/'+uid)
-                this.bookList = res.data.rbookUserList
-            },
-            addCurrency: async function () {
-                await axios.post('http://localhost:8090/', this.request)
-                await this.refresh()
-                this.$message({
-                    showClose: true,
-                    message: 'Add Currency Success!',
-                    type: 'success'
+                this.isbnList = res.data.rbookUserList
+                // console.log(this.isbnList)
+                // this.bookList = await this.isbnList.map(ob => {
+                //     this.searchBookIsbn(ob.isbn)}
+                //     )
+                await this.isbnList.forEach(ob => {
+                    this.searchBookIsbn(ob.isbn)
                 })
+
             },
-            deleteCurrency: async function (id) {
-                await axios.delete('http://localhost:8090/' + id)
-                await this.refresh()
-                this.$message({
-                    showClose: true,
-                    message: 'Delete Currency Success!',
-                    type: 'success'
-                })
-            },
-            searchBook: async function () {
-                // const url = 'https://www.googleapis.com/books/v1/volumes?q=' + this.request.bookName
+            searchBookIsbn: async function (isbn) {
                 const url = 
                     bookApiConfig.url
                     + '?applicationId=' 
                     + bookApiConfig.appKey
-                    + '&title='
-                    + this.bookRequest.bookName
-                console.log(url)
+                    + '&isbn='
+                    + isbn
+                console.log('url : '+ url)
                 const res = await axios.get(url)
-                this.searchedBookList = res.data.Items
-                console.log(res)
-                this.bookRequest.bookName = undefined
-                this.bookRequest.isbn = undefined
+                console.log('res : ' + res)
+                this.bookList.push(res.data.Items[0])
+                // return res
             },
             registbook: async function (isbn) {
                 this.bookRequest.isbn = isbn

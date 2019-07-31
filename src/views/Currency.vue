@@ -168,7 +168,6 @@
 /* eslint-disable no-console */
 
     import axios from 'axios'
-    import SubHeader from '../views/SubHeader'
     import Navmenu from '../views/Navmenu'
     import bookApiConfig from '../config/bookapi'
 
@@ -176,7 +175,7 @@
 
     export default {
         name: 'Currency',
-        components: { SubHeader,Navmenu },
+        components: { Navmenu },
         data () {
             return {
                 request: {
@@ -193,6 +192,8 @@
         },
         created: async function () {
             await this.refresh()
+            var user = firebase.auth().currentUser;
+            this.bookRequest.uid = user.uid
         },
         methods: {
             refresh: async function () {
