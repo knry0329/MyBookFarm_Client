@@ -4,7 +4,7 @@
         <el-col :span="24" >
             <el-card class="box-card">
                 <div slot="header" class="clearfix">
-                    <span>My書籍</span>
+                    <span>書籍詳細</span>
                 </div>
                 <el-table
                     :data="bookList"
@@ -13,7 +13,7 @@
                         prop="Item.isbn"
                         label="ISBNコード"
                     />
-                    <el-table-column
+                    <!-- <el-table-column
                         prop="Item.author"
                         label="著者"
                     />
@@ -37,10 +37,10 @@
                                 size="mini"
                                 type="danger"
                                 >
-                                <router-link :to="{ name: 'bookDetail', params: { isbn: scope.row.Item.isbn }}">詳細</router-link>
-                                </el-button>
+                                <router-link to="{ name: 'bookDetail', params: { isbn: scope.row.Item.isbn }}"></router-link>
+                                読んだ本として追加</el-button>
                         </template>
-                    </el-table-column>
+                    </el-table-column> -->
                 </el-table>            
             </el-card>
         </el-col>
@@ -56,23 +56,17 @@
     import firebase from 'firebase'
 
     export default {
-        name: 'MyBook',
+        name: 'BookDetail',
         components: { Navmenu },
         data () {
             return {
-                bookRequest: {
-                    bookName: undefined,
-                    isbn: undefined
-                },
-                isbnList: [],
-                bookList: [],
-                user: {}
+                isbn: undefined,
+                bookList: []
             }
         },
         created: async function () {
             firebase.auth().onAuthStateChanged(user => {
                 this.user = user ? user : {}
-                console.log(this.user.uid)
                 if (user) {
                     this.refresh(this.user.uid)
                 } else {
@@ -81,15 +75,14 @@
         },
         methods: {
             refresh: async function (uid) {
-                const res = await axios.get('http://localhost:8090/book/'+uid)
-                this.isbnList = res.data.rbookUserList
-                // console.log(this.isbnList)
-                // this.bookList = await this.isbnList.map(ob => {
-                //     this.searchBookIsbn(ob.isbn)}
-                //     )
-                await this.isbnList.forEach(ob => {
-                    this.searchBookIsbn(ob.isbn)
-                })
+                this.isbn = this.$route.params.isbn
+                console.log(this.isbn)
+                this.searchBookIsbn(this.isbn)
+                // const res = await axios.get('http://localhost:8090/book/'+uid)
+                // this.isbnList = res.data.rbookUserList
+                // await this.isbnList.forEach(ob => {
+                //     this.searchBookIsbn(ob.isbn)
+                // })
 
             },
             searchBookIsbn: async function (isbn) {

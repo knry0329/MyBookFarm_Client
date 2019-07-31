@@ -43,6 +43,11 @@ let router = new Router({
       path: '/mybook',
       name: 'mybook',
       component: () => import(/* webpackChunkName: "mybook" */ './views/MyBook.vue')
+    },
+    {
+      path: '/bookDetail/:isbn',
+      name: 'bookDetail',
+      component: () => import(/* webpackChunkName: "bookDetail" */ './views/BookDetail.vue')
     }
   ]
 })
