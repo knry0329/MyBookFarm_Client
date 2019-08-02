@@ -6,6 +6,22 @@
                 <div slot="header" class="clearfix">
                     <span>書籍詳細</span>
                 </div>
+                <el-low :gutter="20">
+                    <el-col :span="12">
+                        <div class="imageArea">
+                            <img :src="bookDetail.Item.largeImageUrl" />
+                        </div>
+
+                    </el-col>
+                    <el-col :span="12">
+                        <div class="detailArea">
+                            <p>書籍名: {{bookDetail.Item.title}}</p>
+                            <p>著者: {{bookDetail.Item.author}}</p>
+                            <p>総ページ数: {{bookDetail.Item.author}}</p>
+                        </div>
+
+                    </el-col>
+                </el-low>
                 <el-table
                     :data="bookList"
                     style="width: 100%">
@@ -61,7 +77,8 @@
         data () {
             return {
                 isbn: undefined,
-                bookList: []
+                bookList: [],
+                bookDetail: {}
             }
         },
         created: async function () {
@@ -96,19 +113,9 @@
                 const res = await axios.get(url)
                 console.log('res : ' + res)
                 this.bookList.push(res.data.Items[0])
+                this.bookDetail = res.data.Items[0]
+                console.log(this.bookdetail)
                 // return res
-            },
-            bookDetail: async function (isbn) {
-                this.bookRequest.isbn = isbn
-                await axios.get('http://localhost:8090/book', this.bookRequest)
-                await this.refresh()
-                this.$message({
-                    showClose: true,
-                    message: 'Add Currency Success!',
-                    type: 'success'
-                })
-                this.bookRequest.isbn = undefined
-                this.bookRequest.address = undefined
             },
         }
     }
@@ -116,4 +123,7 @@
 
 <style scoped lang="scss">
     @import "../styles/base";
+    .detailArea {
+        text-align:left;
+    }
 </style>

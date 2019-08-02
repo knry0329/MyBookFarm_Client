@@ -6,8 +6,9 @@
         @select="handleSelect"
         background-color="#545c64"
         text-color="#fff"
-        active-text-color="#ffd04b">
-        <el-menu-item index="1"><router-link to="/currency">SearchBook</router-link></el-menu-item>
+        active-text-color="#ffd04b"
+        router>
+        <el-menu-item index="1" :route="{name: 'currency'}">Search Book</el-menu-item>
         <!-- <el-submenu index="2">
             <template slot="title">Workspace</template>
             <el-menu-item index="2-1">item one</el-menu-item>
@@ -22,7 +23,7 @@
         </el-submenu>
         <el-menu-item index="3" disabled>Info</el-menu-item> -->
         <!-- <el-menu-item index="4"><a v-bind:href="mybook"></a>MyBook</el-menu-item> -->
-        <el-menu-item index="4"><router-link to="/mybook">MyBook</router-link></el-menu-item>
+        <el-menu-item index="4" :route="{name: 'mybook'}">My Book</el-menu-item>
         <el-menu-item index="5" @click="signout">Signout</el-menu-item>
     </el-menu>
 </template>
@@ -36,6 +37,10 @@
                 activeIndex: undefined,
             };
         },
+    //         mounted() {
+    //     // 読み込まれたページをアクティブ
+    //     this.activeIndex = this.$route.name;
+    // },
         methods: {
             handleSelect(key, keyPath) {
                 console.log(key, keyPath);

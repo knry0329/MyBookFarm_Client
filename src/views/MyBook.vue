@@ -36,9 +36,9 @@
                             <el-button
                                 size="mini"
                                 type="danger"
-                                >
+                            >
                                 <router-link :to="{ name: 'bookDetail', params: { isbn: scope.row.Item.isbn }}">詳細</router-link>
-                                </el-button>
+                            </el-button>
                         </template>
                     </el-table-column>
                 </el-table>            
