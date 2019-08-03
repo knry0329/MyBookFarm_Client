@@ -24,9 +24,9 @@ let router = new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     },
     {
-      path: '/currency',
-      name: 'currency',
-      component: () => import(/* webpackChunkName: "currency" */ './views/Currency.vue'),
+      path: '/searchbook',
+      name: 'searchbook',
+      component: () => import(/* webpackChunkName: "SearchBook" */ './views/SearchBook.vue'),
       meta: { requiresAuth: true }
     },
     {

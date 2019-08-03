@@ -10,7 +10,6 @@
                     <div class="imageArea">
                         <img :src="bookDetail.Item.largeImageUrl" />
                     </div>
-
                 </el-col>
                 <el-col :span="12">
                     <div class="detailArea">
@@ -58,11 +57,8 @@
                 marks: {
                     100: '完了！'
                 },
-                bookUserRequest: {
-                    uid: undefined,
-                    isbn: undefined,
-                    progress: undefined
-                }
+                bookUserRequest: {}
+                
             }
         },
         created: async function () {
@@ -77,13 +73,12 @@
         methods: {
             refresh: async function (uid) {
                 this.isbn = this.$route.params.isbn
+                this.uid = uid
                 //書籍APIから書籍情報を取得
                 this.searchBookIsbn()
 
                 //サーバのAPIからユーザの書籍情報を取得
                 this.searchBookUser(uid)
-
-                this.uid = uid
             },
             searchBookIsbn: async function () {
                 const url = 
@@ -106,11 +101,22 @@
                 console.log(this.bookUserDetail.isbn)
             },
             onChange:function() {
-                console.log("hoge")
                 console.log(this.bookUserDetail.progress)
             },
-            updateUserBook:function() {
-                
+            updateUserBook: async function() {
+                this.bookUserRequest.uid = this.uid
+                this.bookUserRequest.isbn = this.isbn
+                this.bookUserRequest.progress = this.bookUserDetail.progress
+                console.log(this.bookUserRequest)
+                const url = 'http://localhost:8090/book'
+                const res = await axios.put(url, this.bookUserRequest)
+                this.$message({
+                    showClose: true,
+                    message: 'Update Success!',
+                    type: 'success'
+                })
+                this.bookRequest = {}
+
             }
         }
     }

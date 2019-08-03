@@ -28,7 +28,7 @@
         methods: {
             signIn: async function () {
                 await firebase.auth().signInWithEmailAndPassword(this.username, this.password)
-                    .then(() => this.$router.push('/currency'))
+                    .then(() => this.$router.push('/searchbook'))
                     .catch(error => {
                         this.$message({
                             showClose: true,

@@ -8,7 +8,7 @@
         text-color="#fff"
         active-text-color="#ffd04b"
         router>
-        <el-menu-item index="1" :route="{name: 'currency'}">Search Book</el-menu-item>
+        <el-menu-item index="1" :route="{name: 'searchbook'}">Search Book</el-menu-item>
         <!-- <el-submenu index="2">
             <template slot="title">Workspace</template>
             <el-menu-item index="2-1">item one</el-menu-item>
@@ -24,7 +24,7 @@
         <el-menu-item index="3" disabled>Info</el-menu-item> -->
         <!-- <el-menu-item index="4"><a v-bind:href="mybook"></a>MyBook</el-menu-item> -->
         <el-menu-item index="4" :route="{name: 'mybook'}">My Book</el-menu-item>
-        <el-menu-item index="5" @click="signout">Signout</el-menu-item>
+        <el-menu-item index="5" @click="signout">Sign Out</el-menu-item>
     </el-menu>
 </template>
 

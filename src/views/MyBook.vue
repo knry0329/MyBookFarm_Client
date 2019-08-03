@@ -35,9 +35,10 @@
                         <template slot-scope="scope">
                             <el-button
                                 size="mini"
-                                type="danger"
-                            >
-                                <router-link :to="{ name: 'bookDetail', params: { isbn: scope.row.Item.isbn }}">詳細</router-link>
+                                type="success"
+                                v-on:click="gotoDetail(scope.row.Item.isbn)"
+                            >詳細
+                                <!-- <router-link :to="{ name: 'bookDetail', params: { isbn: scope.row.Item.isbn }}">詳細</router-link> -->
                             </el-button>
                         </template>
                     </el-table-column>
@@ -83,10 +84,6 @@
             refresh: async function (uid) {
                 const res = await axios.get('http://localhost:8090/book/'+uid)
                 this.isbnList = res.data.rbookUserList
-                // console.log(this.isbnList)
-                // this.bookList = await this.isbnList.map(ob => {
-                //     this.searchBookIsbn(ob.isbn)}
-                //     )
                 await this.isbnList.forEach(ob => {
                     this.searchBookIsbn(ob.isbn)
                 })
@@ -103,20 +100,22 @@
                 const res = await axios.get(url)
                 console.log('res : ' + res)
                 this.bookList.push(res.data.Items[0])
-                // return res
             },
-            bookDetail: async function (isbn) {
-                this.bookRequest.isbn = isbn
-                await axios.get('http://localhost:8090/book', this.bookRequest)
-                await this.refresh()
-                this.$message({
-                    showClose: true,
-                    message: 'Add Currency Success!',
-                    type: 'success'
-                })
-                this.bookRequest.isbn = undefined
-                this.bookRequest.address = undefined
-            },
+            // bookDetail: async function (isbn) {
+            //     this.bookRequest.isbn = isbn
+            //     await axios.get('http://localhost:8090/book', this.bookRequest)
+            //     await this.refresh()
+            //     this.$message({
+            //         showClose: true,
+            //         message: 'get book Success!',
+            //         type: 'success'
+            //     })
+            //     this.bookRequest.isbn = undefined
+            //     this.bookRequest.address = undefined
+            // },
+            gotoDetail: function (isbn) {
+                this.$router.push({ name: 'bookDetail', params: { isbn: isbn }})
+            }
         }
     }
 </script>
