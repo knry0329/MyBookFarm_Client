@@ -15,6 +15,7 @@
                     <div class="detailArea">
                         <p>書籍名: {{bookDetail.Item.title}}</p>
                         <p>著者: {{bookDetail.Item.author}}</p>
+                        <p>ページ数: {{bookDetailOpenBD.onix.DescriptiveDetail.Extent[0].ExtentValue}}</p>
                         <div class="block">
                             <span class="demonstration">読み進め度</span>
                             <el-slider 
@@ -53,6 +54,7 @@
                 uid: undefined,
                 isbn: undefined,
                 bookDetail: {},
+                bookDetailOpenBD: {},
                 bookUserDetail: {},
                 marks: {
                     100: '完了！'
@@ -76,6 +78,8 @@
                 this.uid = uid
                 //書籍APIから書籍情報を取得
                 this.searchBookIsbn()
+                //書籍APIから書籍情報を取得
+                this.searchBookIsbnOpenBD()
 
                 //サーバのAPIからユーザの書籍情報を取得
                 this.searchBookUser(uid)
@@ -87,11 +91,19 @@
                     + bookApiConfig.appKey
                     + '&isbn='
                     + this.isbn
+                const res = await axios.get(url)
+                this.bookDetail = res.data.Items[0]
+            },
+            searchBookIsbnOpenBD: async function () {
+                const url = 
+                    bookApiConfig.urlOpenBD
+                    + '?isbn=' 
+                    + this.isbn
                 console.log('url : '+ url)
                 const res = await axios.get(url)
                 console.log('res : ' + res)
-                this.bookDetail = res.data.Items[0]
-                console.log(this.bookdetail)
+                this.bookDetailOpenBD = res.data[0]
+                console.log(this.bookDetailOpenBD)
                 // return res
             },
             searchBookUser: async function (uid) {
