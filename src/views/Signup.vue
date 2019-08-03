@@ -18,13 +18,17 @@
 
 <script>
     import firebase from 'firebase'
+    import axios from 'axios'
 
     export default {
         name: 'Signup',
         data () {
             return {
                 username: undefined,
-                password: undefined
+                password: undefined,
+                userRequest: {
+
+                }
             }
         },
         methods: {
@@ -38,6 +42,18 @@
                             message: 'Register User Success!',
                             type: 'success'
                         })
+
+                        var user = firebase.auth().currentUser
+                        // console.log(user1)
+                        this.registUser(user.uid)
+                        // firebase.auth().onAuthStateChanged(user => {
+                        //     if(user) {
+                        //         this.registUser(user.uid)
+                        //         return
+                        //     } else {
+                        //         console.log("none!!!!!!")
+                        //     }
+                        // })
                     })
                     .catch(error => {
                         this.$message({
@@ -46,6 +62,13 @@
                             type: 'error'
                         })
                     })
+            },
+            registUser: async function(uid) {
+                this.userRequest.uid = uid
+                this.userRequest.uname = uid
+                this.userRequest.description = ''
+                await axios.post('http://localhost:8090/user', this.userRequest)
+                this.userRequest = {}
             }
         }
     }

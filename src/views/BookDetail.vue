@@ -8,22 +8,22 @@
                 </div>
                 <el-col :span="12">
                     <div class="imageArea">
-                        <img :src="bookDetail.Item.largeImageUrl" />
+                        <img :src="bookDetail.Item.largeImageUrl"/>
                     </div>
                 </el-col>
                 <el-col :span="12">
                     <div class="detailArea">
                         <p>書籍名: {{bookDetail.Item.title}}</p>
                         <p>著者: {{bookDetail.Item.author}}</p>
-                        <p>ページ数: {{bookDetailOpenBD.onix.DescriptiveDetail.Extent[0].ExtentValue}}</p>
+                        <p>ページ数: {{getPage()}}</p>
                         <div class="block">
-                            <span class="demonstration">読み進め度</span>
+                            <span class="demonstration">ページ進捗</span>
                             <el-slider 
                                 v-model="bookUserDetail.progress"
-                                :step="10"
-                                show-stops
                                 :marks="marks"
-                                :change="onChange()"></el-slider>
+                                :max="getPage()"
+                                :change="onChange()"
+                                show-input></el-slider>
                         </div>
                         <el-button
                             size="mini"
@@ -57,7 +57,7 @@
                 bookDetailOpenBD: {},
                 bookUserDetail: {},
                 marks: {
-                    100: '完了！'
+                    // getPage(): '完了！'
                 },
                 bookUserRequest: {}
                 
@@ -128,7 +128,10 @@
                     type: 'success'
                 })
                 this.bookRequest = {}
-
+                this.$router.push({ name: 'mybook'})
+            },
+            getPage: function() {
+                return Number(this.bookDetailOpenBD.onix.DescriptiveDetail.Extent[0].ExtentValue)
             }
         }
     }
@@ -138,5 +141,8 @@
     @import "../styles/base";
     .detailArea {
         text-align:left;
+    }
+    .box-card {
+        padding-bottom: 200px;
     }
 </style>
