@@ -1,63 +1,38 @@
 <template>
-    <el-row>
+    <el-row :gutter="20">
         <navmenu :activeindex="4"/>
         <el-col :span="24" >
             <el-card class="box-card">
                 <div slot="header" class="clearfix">
                     <span>書籍詳細</span>
                 </div>
-                <el-low :gutter="20">
-                    <el-col :span="12">
-                        <div class="imageArea">
-                            <img :src="bookDetail.Item.largeImageUrl" />
-                        </div>
+                <el-col :span="12">
+                    <div class="imageArea">
+                        <img :src="bookDetail.Item.largeImageUrl" />
+                    </div>
 
-                    </el-col>
-                    <el-col :span="12">
-                        <div class="detailArea">
-                            <p>書籍名: {{bookDetail.Item.title}}</p>
-                            <p>著者: {{bookDetail.Item.author}}</p>
-                            <p>総ページ数: {{bookDetail.Item.author}}</p>
+                </el-col>
+                <el-col :span="12">
+                    <div class="detailArea">
+                        <p>書籍名: {{bookDetail.Item.title}}</p>
+                        <p>著者: {{bookDetail.Item.author}}</p>
+                        <div class="block">
+                            <span class="demonstration">読み進め度</span>
+                            <el-slider 
+                                v-model="bookUserDetail.progress"
+                                :step="10"
+                                show-stops
+                                :marks="marks"
+                                :change="onChange()"></el-slider>
                         </div>
-
-                    </el-col>
-                </el-low>
-                <el-table
-                    :data="bookList"
-                    style="width: 100%">
-                    <el-table-column
-                        prop="Item.isbn"
-                        label="ISBNコード"
-                    />
-                    <!-- <el-table-column
-                        prop="Item.author"
-                        label="著者"
-                    />
-                    <el-table-column
-                        prop="Item.title"
-                        label="タイトル"
-                    />
-                    <el-table-column
-                        label="画像"
-                    >
-                        <template slot-scope="scope">
-                            <img :src="scope.row.Item.mediumImageUrl" />
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                        prop="operation"
-                        label="Ops"
-                        align="left">
-                        <template slot-scope="scope">
-                            <el-button
-                                size="mini"
-                                type="danger"
-                                >
-                                <router-link to="{ name: 'bookDetail', params: { isbn: scope.row.Item.isbn }}"></router-link>
-                                読んだ本として追加</el-button>
-                        </template>
-                    </el-table-column> -->
-                </el-table>            
+                        <el-button
+                            size="mini"
+                            type="success"
+                            v-on:click="updateUserBook()"
+                        >更新
+                        </el-button>
+                    </div>
+                </el-col>
             </el-card>
         </el-col>
     </el-row>
@@ -76,9 +51,18 @@
         components: { Navmenu },
         data () {
             return {
+                uid: undefined,
                 isbn: undefined,
-                bookList: [],
-                bookDetail: {}
+                bookDetail: {},
+                bookUserDetail: {},
+                marks: {
+                    100: '完了！'
+                },
+                bookUserRequest: {
+                    uid: undefined,
+                    isbn: undefined,
+                    progress: undefined
+                }
             }
         },
         created: async function () {
@@ -93,30 +77,41 @@
         methods: {
             refresh: async function (uid) {
                 this.isbn = this.$route.params.isbn
-                console.log(this.isbn)
-                this.searchBookIsbn(this.isbn)
-                // const res = await axios.get('http://localhost:8090/book/'+uid)
-                // this.isbnList = res.data.rbookUserList
-                // await this.isbnList.forEach(ob => {
-                //     this.searchBookIsbn(ob.isbn)
-                // })
+                //書籍APIから書籍情報を取得
+                this.searchBookIsbn()
 
+                //サーバのAPIからユーザの書籍情報を取得
+                this.searchBookUser(uid)
+
+                this.uid = uid
             },
-            searchBookIsbn: async function (isbn) {
+            searchBookIsbn: async function () {
                 const url = 
                     bookApiConfig.url
                     + '?applicationId=' 
                     + bookApiConfig.appKey
                     + '&isbn='
-                    + isbn
+                    + this.isbn
                 console.log('url : '+ url)
                 const res = await axios.get(url)
                 console.log('res : ' + res)
-                this.bookList.push(res.data.Items[0])
                 this.bookDetail = res.data.Items[0]
                 console.log(this.bookdetail)
                 // return res
             },
+            searchBookUser: async function (uid) {
+                const url = 'http://localhost:8090/book/'+uid+'/'+this.isbn
+                const res = await axios.get(url)
+                this.bookUserDetail = res.data.rbookUserList[0]
+                console.log(this.bookUserDetail.isbn)
+            },
+            onChange:function() {
+                console.log("hoge")
+                console.log(this.bookUserDetail.progress)
+            },
+            updateUserBook:function() {
+                
+            }
         }
     }
 </script>

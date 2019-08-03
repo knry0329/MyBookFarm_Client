@@ -37,10 +37,10 @@
                 activeIndex: undefined,
             };
         },
-    //         mounted() {
-    //     // 読み込まれたページをアクティブ
-    //     this.activeIndex = this.$route.name;
-    // },
+        //         mounted() {
+        //     // 読み込まれたページをアクティブ
+        //     this.activeIndex = this.$route.name;
+        // },
         methods: {
             handleSelect(key, keyPath) {
                 console.log(key, keyPath);
