@@ -6,31 +6,55 @@
                 <div slot="header" class="clearfix">
                     <span>書籍詳細</span>
                 </div>
-                <el-col :span="12">
+                <el-col :span="9" :offset="3">
                     <div class="imageArea">
                         <img :src="bookDetail.Item.largeImageUrl"/>
                     </div>
-                </el-col>
-                <el-col :span="12">
+                    <!-- </el-col>
+                <el-col :span="6"> -->
                     <div class="detailArea">
                         <p>書籍名: {{bookDetail.Item.title}}</p>
                         <p>著者: {{bookDetail.Item.author}}</p>
                         <p>ページ数: {{getPage()}}</p>
+                    </div>
+                </el-col>
+                <el-col :span="9">
+                    <div class="detailArea">
+                        <!-- <p>書籍名: {{bookDetail.Item.title}}</p>
+                        <p>著者: {{bookDetail.Item.author}}</p>
+                        <p>ページ数: {{getPage()}}</p> -->
                         <div class="block">
-                            <span class="demonstration">ページ進捗</span>
+                            <p class="demonstration">ページ進捗</p>
                             <el-slider 
                                 v-model="bookUserDetail.progress"
-                                :marks="marks"
                                 :max="getPage()"
-                                :change="onChange()"
                                 show-input></el-slider>
                         </div>
-                        <el-button
-                            size="mini"
-                            type="success"
-                            v-on:click="updateUserBook()"
-                        >更新
-                        </el-button>
+                        <div id="progress-switch">
+                            <el-switch
+                                v-model="bookUserDetail.progress"
+                                active-text="読了"
+                                :active-value="getPage()"
+                            >
+                            </el-switch>
+                        </div>
+                        <p>書籍メモ</p>
+                        <!-- <markdown v-model="memo1"/> -->
+                        <el-input
+                            type="textarea"
+                            :rows="2"
+                            placeholder="Please input"
+                            v-model="bookUserDetail.memo">
+                        </el-input>
+                        <div id="update-button-area">
+                            <el-button 
+                                id="update-button"
+                                size="mini"
+                                type="success"
+                                v-on:click="updateUserBook()"
+                            >更新
+                            </el-button>
+                        </div>
                     </div>
                 </el-col>
             </el-card>
@@ -43,12 +67,13 @@
 
     import axios from 'axios'
     import Navmenu from '../views/Navmenu'
+    // import markdown from '../views/MarkDown'
     import bookApiConfig from '../config/bookapi'
     import firebase from 'firebase'
 
     export default {
         name: 'BookDetail',
-        components: { Navmenu },
+        components: { Navmenu},
         data () {
             return {
                 uid: undefined,
@@ -56,11 +81,7 @@
                 bookDetail: {},
                 bookDetailOpenBD: {},
                 bookUserDetail: {},
-                marks: {
-                    // getPage(): '完了！'
-                },
-                bookUserRequest: {}
-                
+                bookUserRequest: {},
             }
         },
         created: async function () {
@@ -79,10 +100,10 @@
                 //書籍APIから書籍情報を取得
                 this.searchBookIsbn()
                 //書籍APIから書籍情報を取得
-                this.searchBookIsbnOpenBD()
+                await this.searchBookIsbnOpenBD()
 
                 //サーバのAPIからユーザの書籍情報を取得
-                this.searchBookUser(uid)
+                await this.searchBookUser(uid)
             },
             searchBookIsbn: async function () {
                 const url = 
@@ -112,13 +133,11 @@
                 this.bookUserDetail = res.data.rbookUserList[0]
                 console.log(this.bookUserDetail.isbn)
             },
-            onChange:function() {
-                console.log(this.bookUserDetail.progress)
-            },
             updateUserBook: async function() {
                 this.bookUserRequest.uid = this.uid
                 this.bookUserRequest.isbn = this.isbn
                 this.bookUserRequest.progress = this.bookUserDetail.progress
+                this.bookUserRequest.memo = this.bookUserDetail.memo
                 console.log(this.bookUserRequest)
                 const url = 'http://localhost:8090/book'
                 const res = await axios.put(url, this.bookUserRequest)
@@ -128,6 +147,7 @@
                     type: 'success'
                 })
                 this.bookRequest = {}
+                console.log(this.memo)
                 this.$router.push({ name: 'mybook'})
             },
             getPage: function() {
@@ -144,5 +164,14 @@
     }
     .box-card {
         padding-bottom: 200px;
+    }
+    #update-button {
+        margin-top: 1em;
+    }
+    #update-button-area {
+        text-align:right;
+    }
+    #progress-switch {
+        margin-top:1em;
     }
 </style>
