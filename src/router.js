@@ -45,6 +45,11 @@ let router = new Router({
       component: () => import(/* webpackChunkName: "mybook" */ './views/MyBook.vue')
     },
     {
+      path: '/mypage',
+      name: 'mypage',
+      component: () => import(/* webpackChunkName: "mypage" */ './views/MyPage.vue')
+    },
+    {
       path: '/bookDetail/:isbn',
       name: 'bookDetail',
       component: () => import(/* webpackChunkName: "bookDetail" */ './views/BookDetail.vue')

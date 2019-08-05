@@ -1,6 +1,6 @@
 <template>
     <el-row>
-        <navmenu/>
+        <navmenu index="2"/>
         <el-col :span="24">
             <el-card class="box-card box-card-wrapper">
                 <div slot="header">

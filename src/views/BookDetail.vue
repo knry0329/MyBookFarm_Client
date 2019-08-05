@@ -1,14 +1,15 @@
 <template>
     <el-row :gutter="20">
-        <navmenu :activeindex="4"/>
-        <el-col :span="24" >
+        <navmenu index="3"/>
+        <el-col :span="24" v-loading="loading" >
             <el-card class="box-card">
                 <div slot="header" class="clearfix">
                     <span>書籍詳細</span>
                 </div>
                 <el-col :span="9" :offset="3">
                     <div class="imageArea">
-                        <img :src="bookDetail.Item.largeImageUrl"/>
+                        <!-- <img :src="bookDetail.Item.largeImageUrl"/> -->
+                        <el-image :src="bookDetail.Item.largeImageUrl"/>
                     </div>
                     <!-- </el-col>
                 <el-col :span="6"> -->
@@ -25,18 +26,18 @@
                         <p>ページ数: {{getPage()}}</p> -->
                         <div class="block">
                             <p class="demonstration">ページ進捗</p>
+                            <div id="progress-switch">
+                                <el-switch
+                                    v-model="bookUserDetail.progress"
+                                    active-text="読了"
+                                    :active-value="getPage()"
+                                >
+                                </el-switch>
+                            </div>
                             <el-slider 
                                 v-model="bookUserDetail.progress"
                                 :max="getPage()"
                                 show-input></el-slider>
-                        </div>
-                        <div id="progress-switch">
-                            <el-switch
-                                v-model="bookUserDetail.progress"
-                                active-text="読了"
-                                :active-value="getPage()"
-                            >
-                            </el-switch>
                         </div>
                         <p>書籍メモ</p>
                         <!-- <markdown v-model="memo1"/> -->
@@ -82,9 +83,10 @@
                 bookDetailOpenBD: {},
                 bookUserDetail: {},
                 bookUserRequest: {},
+                loading:false
             }
         },
-        created: async function () {
+        created: function () {
             firebase.auth().onAuthStateChanged(user => {
                 this.user = user ? user : {}
                 if (user) {
@@ -100,10 +102,10 @@
                 //書籍APIから書籍情報を取得
                 this.searchBookIsbn()
                 //書籍APIから書籍情報を取得
-                await this.searchBookIsbnOpenBD()
+                this.searchBookIsbnOpenBD()
 
                 //サーバのAPIからユーザの書籍情報を取得
-                await this.searchBookUser(uid)
+                this.searchBookUser(uid)
             },
             searchBookIsbn: async function () {
                 const url = 
@@ -134,6 +136,7 @@
                 console.log(this.bookUserDetail.isbn)
             },
             updateUserBook: async function() {
+                this.loading = true
                 this.bookUserRequest.uid = this.uid
                 this.bookUserRequest.isbn = this.isbn
                 this.bookUserRequest.progress = this.bookUserDetail.progress
@@ -148,6 +151,7 @@
                 })
                 this.bookRequest = {}
                 console.log(this.memo)
+                this.loading = true
                 this.$router.push({ name: 'mybook'})
             },
             getPage: function() {
@@ -161,6 +165,7 @@
     @import "../styles/base";
     .detailArea {
         text-align:left;
+        padding-left:10em;
     }
     .box-card {
         padding-bottom: 200px;

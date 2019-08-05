@@ -1,6 +1,6 @@
 <template>
     <div class="global-header">
-        <span class="global-header-label">Welcome to Gemini Application!</span>
+        <span class="global-header-label">Growth Your Skill!</span>
     </div>
 </template>
 
