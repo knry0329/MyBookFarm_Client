@@ -70,6 +70,7 @@
     import Navmenu from '../views/Navmenu'
     // import markdown from '../views/MarkDown'
     import bookApiConfig from '../config/bookapi'
+    import dateutil from '../util/dateutil'
     import firebase from 'firebase'
 
     export default {
@@ -79,10 +80,12 @@
             return {
                 uid: undefined,
                 isbn: undefined,
+                beforeProgress: undefined,
                 bookDetail: {},
                 bookDetailOpenBD: {},
                 bookUserDetail: {},
                 bookUserRequest: {},
+                userProgressRequest: {},
                 loading:false
             }
         },
@@ -134,6 +137,7 @@
                 const res = await axios.get(url)
                 this.bookUserDetail = res.data.rbookUserList[0]
                 console.log(this.bookUserDetail.isbn)
+                this.beforeProgress = res.data.rbookUserList[0].progress
             },
             updateUserBook: async function() {
                 this.loading = true
@@ -144,14 +148,26 @@
                 console.log(this.bookUserRequest)
                 const url = 'http://localhost:8090/book'
                 const res = await axios.put(url, this.bookUserRequest)
+                
+                this.userProgressRequest.uid = this.uid
+                this.userProgressRequest.ymd = dateutil.formatDate(new Date(),'YYYY-MM-DD hh:mm:ss')
+                this.userProgressRequest.kbn = '0'
+                this.userProgressRequest.isbn = this.isbn
+                var nowProgress = this.bookUserRequest.progress - this.beforeProgress
+                this.userProgressRequest.progress = nowProgress
+                const url_progress = 'http://localhost:8090/user/progress'
+                const res_progress = await axios.post(url_progress, this.userProgressRequest)
+
+                this.bookRequest = {}
+                this.userProgressRequest = {}
+
                 this.$message({
                     showClose: true,
                     message: 'Update Success!',
                     type: 'success'
                 })
-                this.bookRequest = {}
-                console.log(this.memo)
-                this.loading = true
+
+                this.loading = false
                 this.$router.push({ name: 'mybook'})
             },
             getPage: function() {
