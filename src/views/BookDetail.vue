@@ -6,21 +6,21 @@
                 <div slot="header" class="clearfix">
                     <span>書籍詳細</span>
                 </div>
-                <el-col :span="9" :offset="3">
+                <el-col :span="3" :offset="4">
                     <div class="imageArea">
                         <!-- <img :src="bookDetail.Item.largeImageUrl"/> -->
                         <el-image  v-if="'imageLinks' in bookDetail" :src="bookDetail.imageLinks.thumbnail"/>
                     </div>
-                    <!-- </el-col>
-                <el-col :span="6"> -->
+                </el-col>
+                <el-col :span="8">
                     <div class="detailArea">
                         <p>書籍名: {{bookDetail.title}}</p>
-                        <p>著者: {{bookDetail.authors.join(',')}}</p>
+                        <p>著者: {{bookDetail.authors.length == 1 ? bookDetail.authors[0] : bookDetail.authors.join(',')}}</p>
                         <p>ページ数: {{getPage()== -1? "不明" : getPage()}}</p>
                     </div>
                 </el-col>
-                <el-col :span="9">
-                    <div class="detailArea">
+                <el-col :span="6">
+                    <div class="progressArea">
                         <!-- <p>書籍名: {{bookDetail.Item.title}}</p>
                         <p>著者: {{bookDetail.Item.author}}</p>
                         <p>ページ数: {{getPage()}}</p> -->
@@ -143,6 +143,7 @@
                 this.bookUserRequest.uid = this.uid
                 this.bookUserRequest.isbn = this.isbn
                 this.bookUserRequest.progress = this.bookUserDetail.progress
+                this.bookUserRequest.status = this.updateStatus(this.getPage(), this.bookUserDetail.progress)
                 this.bookUserRequest.memo = this.bookUserDetail.memo
                 console.log(this.bookUserRequest)
                 const url = 'http://localhost:8090/book'
@@ -174,6 +175,11 @@
                 //     return 1
                 // }
                 return Number(this.bookDetail.pageCount)
+            },
+            updateStatus: function(pageCount, progress) {
+                if(progress == 0) return 0
+                if(progress == pageCount) return 2
+                return 1
             }
         }
     }
@@ -183,7 +189,10 @@
     @import "../styles/base";
     .detailArea {
         text-align:left;
-        padding-left:10em;
+        padding-left:2em;
+    }
+    .progressArea {
+        text-align:left;
     }
     .box-card {
         padding-bottom: 200px;

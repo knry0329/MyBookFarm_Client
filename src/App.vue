@@ -1,17 +1,17 @@
 <template>
-  <el-container id="app">
-    <el-header id="nav"><global-header/></el-header>
-    <el-main><router-view/></el-main>
-  </el-container>
+    <el-container id="app">
+        <el-header id="nav"><global-header/></el-header>
+        <el-main><router-view/></el-main>
+    </el-container>
 </template>
 
 <script>
-import GlobalHeader from './views/GlobalHeader'
-export default {
-  components: {
-    GlobalHeader
-  }
-}
+    import GlobalHeader from './views/GlobalHeader'
+    export default {
+        components: {
+            GlobalHeader
+        }
+    }
 
 </script>
 <style lang="scss">
