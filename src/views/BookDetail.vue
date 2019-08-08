@@ -9,13 +9,13 @@
                 <el-col :span="9" :offset="3">
                     <div class="imageArea">
                         <!-- <img :src="bookDetail.Item.largeImageUrl"/> -->
-                        <el-image :src="bookDetail.Item.largeImageUrl"/>
+                        <el-image  v-if="'imageLinks' in bookDetail" :src="bookDetail.imageLinks.thumbnail"/>
                     </div>
                     <!-- </el-col>
                 <el-col :span="6"> -->
                     <div class="detailArea">
-                        <p>書籍名: {{bookDetail.Item.title}}</p>
-                        <p>著者: {{bookDetail.Item.author}}</p>
+                        <p>書籍名: {{bookDetail.title}}</p>
+                        <p>著者: {{bookDetail.authors.join(',')}}</p>
                         <p>ページ数: {{getPage()== -1? "不明" : getPage()}}</p>
                     </div>
                 </el-col>
@@ -36,6 +36,7 @@
                             </div>
                             <el-slider 
                                 v-model="bookUserDetail.progress"
+                                :min=0
                                 :max="getPage()"
                                 show-input></el-slider>
                         </div>
@@ -104,34 +105,32 @@
                 this.uid = uid
                 //書籍APIから書籍情報を取得
                 this.searchBookIsbn()
-                //書籍APIから書籍情報を取得
-                this.searchBookIsbnOpenBD()
+                // //書籍APIから書籍情報を取得
+                // this.searchBookIsbnOpenBD()
 
                 //サーバのAPIからユーザの書籍情報を取得
                 this.searchBookUser(uid)
             },
             searchBookIsbn: async function () {
                 const url = 
-                    bookApiConfig.url
-                    + '?applicationId=' 
-                    + bookApiConfig.appKey
-                    + '&isbn='
+                    bookApiConfig.urlGoogleBooks
+                    + '?q=isbn:'
                     + this.isbn
                 const res = await axios.get(url)
-                this.bookDetail = res.data.Items[0]
+                this.bookDetail = res.data.items[0].volumeInfo
             },
-            searchBookIsbnOpenBD: async function () {
-                const url = 
-                    bookApiConfig.urlOpenBD
-                    + '?isbn=' 
-                    + this.isbn
-                console.log('url : '+ url)
-                const res = await axios.get(url)
-                console.log('res : ' + res)
-                this.bookDetailOpenBD = res.data[0]
-                console.log(this.bookDetailOpenBD)
-                // return res
-            },
+            // searchBookIsbnOpenBD: async function () {
+            //     const url = 
+            //         bookApiConfig.urlOpenBD
+            //         + '?isbn=' 
+            //         + this.isbn
+            //     console.log('url : '+ url)
+            //     const res = await axios.get(url)
+            //     console.log('res : ' + res)
+            //     this.bookDetailOpenBD = res.data[0]
+            //     console.log(this.bookDetailOpenBD)
+            //     // return res
+            // },
             searchBookUser: async function (uid) {
                 const url = 'http://localhost:8090/book/'+uid+'/'+this.isbn
                 const res = await axios.get(url)
@@ -171,11 +170,10 @@
                 this.$router.push({ name: 'mybook'})
             },
             getPage: function() {
-                if(this.bookDetailOpenBD == null
-                    || !("Extent" in this.bookDetailOpenBD.onix.DescriptiveDetail)) {
-                    return -1
-                }
-                return Number(this.bookDetailOpenBD.onix.DescriptiveDetail.Extent[0].ExtentValue)
+                // if(!("pageCount" in this.bookDetail)) {
+                //     return 1
+                // }
+                return Number(this.bookDetail.pageCount)
             }
         }
     }

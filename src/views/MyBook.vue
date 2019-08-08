@@ -10,18 +10,18 @@
                     :data="bookinfoList"
                     style="width: 100%">
                     <el-table-column
-                        prop="bookinfo.Item.author"
+                        prop="bookinfo.volumeInfo.authors"
                         label="著者"
                     />
                     <el-table-column
-                        prop="bookinfo.Item.title"
+                        prop="bookinfo.volumeInfo.title"
                         label="タイトル"
                     />
                     <el-table-column
                         label="画像"
                     >
                         <template slot-scope="scope">
-                            <img :src="scope.row.bookinfo.Item.mediumImageUrl" />
+                            <img v-if="'imageLinks' in scope.row.bookinfo.volumeInfo" :src="scope.row.bookinfo.volumeInfo.imageLinks.thumbnail" />
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -32,7 +32,7 @@
                             <el-button
                                 size="mini"
                                 type="success"
-                                v-on:click="gotoDetail(scope.row.bookinfo.Item.isbn)"
+                                v-on:click="gotoDetail(scope.row.isbn.isbn)"
                             >詳細
                                 <!-- <router-link :to="{ name: 'bookDetail', params: { isbn: scope.row.Item.isbn }}">詳細</router-link> -->
                             </el-button>
@@ -100,16 +100,14 @@
             },
             searchBookIsbn: async function (isbn) {
                 const url = 
-                    bookApiConfig.url
-                    + '?applicationId=' 
-                    + bookApiConfig.appKey
-                    + '&isbn='
+                    bookApiConfig.urlGoogleBooks
+                    + '?q=isbn:'
                     + isbn
                 console.log('url : '+ url)
                 const res = await axios.get(url)
                 console.log('res : ' + res)
-                this.bookList.push(res.data.Items[0])
-                return res.data.Items[0]
+                this.bookList.push(res.data.items[0])
+                return res.data.items[0]
             },
             statusToLabel: function(ob) {
                 var label

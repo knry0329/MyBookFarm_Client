@@ -21,37 +21,44 @@ let router = new Router({
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
+      // eslint-disable-next-line
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     },
     {
       path: '/searchbook',
       name: 'searchbook',
+      // eslint-disable-next-line
       component: () => import(/* webpackChunkName: "SearchBook" */ './views/SearchBook.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/signup',
       name: 'signup',
+      // eslint-disable-next-line
       component: () => import(/* webpackChunkName: "singup" */ './views/Signup.vue')
     },
     {
       path: '/signin',
       name: 'signin',
+      // eslint-disable-next-line
       component: () => import(/* webpackChunkName: "singin" */ './views/Signin.vue')
     },
     {
       path: '/mybook',
       name: 'mybook',
+      // eslint-disable-next-line
       component: () => import(/* webpackChunkName: "mybook" */ './views/MyBook.vue')
     },
     {
       path: '/mypage',
       name: 'mypage',
+      // eslint-disable-next-line
       component: () => import(/* webpackChunkName: "mypage" */ './views/MyPage.vue')
     },
     {
       path: '/bookDetail/:isbn',
       name: 'bookDetail',
+      // eslint-disable-next-line
       component: () => import(/* webpackChunkName: "bookDetail" */ './views/BookDetail.vue')
     }
   ]

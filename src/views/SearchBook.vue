@@ -36,22 +36,23 @@
                     :data="searchedBookList"
                     style="width: 100%">
                     <el-table-column
-                        prop="Item.isbn"
+                        prop="volumeInfo.industryIdentifiers[0].identifier"
                         label="ISBNコード"
                     />
                     <el-table-column
-                        prop="Item.author"
+                        prop="volumeInfo.authors"
                         label="著者"
                     />
                     <el-table-column
-                        prop="Item.title"
+                        prop="volumeInfo.title"
                         label="タイトル"
                     />
                     <el-table-column
                         label="画像"
                     >
                         <template slot-scope="scope">
-                            <img :src="scope.row.Item.mediumImageUrl" />
+                            <img v-if="'imageLinks' in scope.row.volumeInfo" :src="scope.row.volumeInfo.imageLinks.thumbnail" />
+                            <div v-else>No Image</div>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -63,7 +64,8 @@
                             <el-button
                                 size="mini"
                                 type="danger"
-                                @click="registbook(scope.row.Item.isbn)">読んだ本として追加</el-button>
+                                :disabled="scope.row.volumeInfo.industryIdentifiers==undefined || scope.row.volumeInfo.industryIdentifiers.length ==0"
+                                @click="registbook(scope.row.volumeInfo.industryIdentifiers[0].identifier)">読んだ本として追加</el-button>
                         </template>
                     </el-table-column>
                 </el-table>            
@@ -80,6 +82,7 @@
     import bookApiConfig from '../config/bookapi'
 
     import firebase from 'firebase'
+    import { defaultCoreCipherList } from 'constants';
 
     export default {
         name: 'SearchBook',
@@ -112,14 +115,34 @@
             searchBook: async function () {
                 // const url = 'https://www.googleapis.com/books/v1/volumes?q=' + this.request.bookName
                 const url = 
-                    bookApiConfig.url
-                    + '?applicationId=' 
-                    + bookApiConfig.appKey
-                    + '&title='
+                    bookApiConfig.urlGoogleBooks
+                    + '?q='
                     + this.bookRequest.bookName
+                    + '&maxResults=40'
                 console.log(url)
                 const res = await axios.get(url)
-                this.searchedBookList = res.data.Items
+                // const newItems = res.data.items.filter(n => n.volumeInfo.industryIdentifiers !== undefined)
+                // res.data.items = newItems
+                res.data.items.forEach((val, index, arr) => {
+                    if(val.volumeInfo.authors) {
+                        val.volumeInfo.authors = val.volumeInfo.authors.join(',')
+                    }
+                    // if(!val.volumeInfo.industryIdentifiers) {
+                    //     console.log(val.volumeInfo)
+                    //     res.data.items.splice(index, 1)
+                    // }
+                    if(val.volumeInfo.industryIdentifiers) {
+                        const newArray = val.volumeInfo.industryIdentifiers.filter(n => n.type==='ISBN_10')
+                        val.volumeInfo.industryIdentifiers = newArray
+                        // val.volumeInfo.industryIdentifiers.forEach((v, i) => {
+                        //     if(v.type ==='ISBN_13') {
+                        //         val.volumeInfo.industryIdentifiers.splice(i, 1)
+                        //     }
+                        // })
+                        console.log(val.volumeInfo.industryIdentifiers)
+                    }
+                })
+                this.searchedBookList = res.data.items
                 console.log(res)
                 this.bookRequest.bookName = undefined
                 this.bookRequest.isbn = undefined
@@ -136,6 +159,9 @@
                 })
                 this.bookRequest.isbn = undefined
             },
+            authorSplit: function(arr) {
+                return arr
+            }
         }
     }
 </script>
