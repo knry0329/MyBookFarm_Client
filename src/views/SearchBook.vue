@@ -99,15 +99,15 @@
         },
         created: async function () {
             await this.refresh()
-            var user = firebase.auth().currentUser;
+            var user = await firebase.auth().currentUser;
             this.bookRequest.uid = user.uid
         },
         methods: {
             refresh: async function () {
-                const res = await axios.get('http://localhost:8090/')
-                this.currencies = res.data.currencies
-                this.request.name = undefined
-                this.request.symbol = undefined
+                // const res = await axios.get('http://localhost:8090/')
+                // this.currencies = res.data.currencies
+                // this.request.name = undefined
+                // this.request.symbol = undefined
             },
             searchBook: async function () {
                 // const url = 'https://www.googleapis.com/books/v1/volumes?q=' + this.request.bookName
@@ -125,6 +125,7 @@
                 this.bookRequest.isbn = undefined
             },
             registbook: async function (isbn) {
+                console.log(this.bookRequest)
                 this.bookRequest.isbn = isbn
                 await axios.post('http://localhost:8090/book', this.bookRequest)
                 await this.refresh()

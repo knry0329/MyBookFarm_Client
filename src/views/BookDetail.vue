@@ -16,7 +16,7 @@
                     <div class="detailArea">
                         <p>書籍名: {{bookDetail.Item.title}}</p>
                         <p>著者: {{bookDetail.Item.author}}</p>
-                        <p>ページ数: {{getPage()}}</p>
+                        <p>ページ数: {{getPage()== -1? "不明" : getPage()}}</p>
                     </div>
                 </el-col>
                 <el-col :span="9">
@@ -171,6 +171,10 @@
                 this.$router.push({ name: 'mybook'})
             },
             getPage: function() {
+                if(this.bookDetailOpenBD == null
+                    || !("Extent" in this.bookDetailOpenBD.onix.DescriptiveDetail)) {
+                    return -1
+                }
                 return Number(this.bookDetailOpenBD.onix.DescriptiveDetail.Extent[0].ExtentValue)
             }
         }

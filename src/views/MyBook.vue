@@ -7,41 +7,42 @@
                     <span>My書籍</span>
                 </div>
                 <el-table
-                    :data="bookList"
+                    :data="bookinfoList"
                     style="width: 100%">
                     <el-table-column
-                        prop="Item.isbn"
-                        label="ISBNコード"
-                    />
-                    <el-table-column
-                        prop="Item.author"
+                        prop="bookinfo.Item.author"
                         label="著者"
                     />
                     <el-table-column
-                        prop="Item.title"
+                        prop="bookinfo.Item.title"
                         label="タイトル"
                     />
                     <el-table-column
                         label="画像"
                     >
                         <template slot-scope="scope">
-                            <img :src="scope.row.Item.mediumImageUrl" />
+                            <img :src="scope.row.bookinfo.Item.mediumImageUrl" />
                         </template>
                     </el-table-column>
                     <el-table-column
                         prop="operation"
-                        label="Ops"
+                        label="詳細"
                         align="left">
                         <template slot-scope="scope">
                             <el-button
                                 size="mini"
                                 type="success"
-                                v-on:click="gotoDetail(scope.row.Item.isbn)"
+                                v-on:click="gotoDetail(scope.row.bookinfo.Item.isbn)"
                             >詳細
                                 <!-- <router-link :to="{ name: 'bookDetail', params: { isbn: scope.row.Item.isbn }}">詳細</router-link> -->
                             </el-button>
                         </template>
                     </el-table-column>
+                    <el-table-column
+                        prop="isbn.label"
+                        label="ステータス"
+                    />
+
                 </el-table>            
             </el-card>
         </el-col>
@@ -67,7 +68,8 @@
                 },
                 isbnList: [],
                 bookList: [],
-                user: {}
+                user: {},
+                bookinfoList: []
             }
         },
         created: async function () {
@@ -84,9 +86,16 @@
             refresh: async function (uid) {
                 const res = await axios.get('http://localhost:8090/book/'+uid)
                 this.isbnList = res.data.rbookUserList
-                await this.isbnList.forEach(ob => {
-                    this.searchBookIsbn(ob.isbn)
+                var tmpList = []
+                await this.isbnList.forEach(async ob => {
+                    ob = this.statusToLabel(ob)
+                    var tmpbookinfo = {}
+                    tmpbookinfo.isbn = ob
+                    tmpbookinfo.bookinfo = await this.searchBookIsbn(ob.isbn)
+                    tmpList.push(tmpbookinfo)
                 })
+                this.bookinfoList = tmpList
+                console.log(this.bookinfoList)
 
             },
             searchBookIsbn: async function (isbn) {
@@ -100,6 +109,25 @@
                 const res = await axios.get(url)
                 console.log('res : ' + res)
                 this.bookList.push(res.data.Items[0])
+                return res.data.Items[0]
+            },
+            statusToLabel: function(ob) {
+                var label
+                switch(ob.status){
+                case "0":
+                    label="未読"
+                    break
+                case "1":
+                    label="読書中"
+                    break
+                case "2":
+                    label="読了"
+                    break
+                default:
+                    break
+                }
+                ob.label=label
+                return ob
             },
             // bookDetail: async function (isbn) {
             //     this.bookRequest.isbn = isbn

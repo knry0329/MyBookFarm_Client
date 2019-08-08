@@ -26,7 +26,8 @@
                             <!-- <el-calendar v-model="nowDate"></el-calendar> -->
                             <v-calendar :attributes="attrs"
                                         :columns="1"
-                                        :from-date="new Date()" ></v-calendar>                        </div>
+                                        :from-date="new Date()" ></v-calendar>
+                        </div>
                         <p>書籍メモ</p>
                     </div>
                 </el-col>
@@ -52,6 +53,8 @@
                 uid: undefined,
                 userDetail: {},
                 bookUserRequest: {},
+                userProgressList: {},
+                userProgressbyDateList: {},
                 nowdate: new Date(),
                 attrs: [
                     {
@@ -100,7 +103,25 @@
             searchUserProgress: async function (uid, yyyymm) {
                 const url = 'http://localhost:8090/user/progress/'+uid+ '/'+yyyymm
                 const res = await axios.get(url)
-                console.log(res)
+                console.log(res.data.tuserProgressList)
+                var tmpList = []
+                for(var tuserProgress of res.data.tuserProgressList) {
+                    console.log(tuserProgress)
+                    var tmp = tuserProgress
+                    var ymdhms = tuserProgress.ymd
+                    // console.log(ymdhms)
+                    tmp.ymd = ymdhms.substr(0, 4) + ymdhms.substr(5, 2) + ymdhms.substr(8, 2)
+                    tmpList.push(tmp)
+
+                }
+                console.log(tmpList)
+
+                //resをフィールド変数に格納
+                this.userProgressList = tmpList
+                //日付ごとに集約して、別のフィールド変数に格納
+                //https://zukucode.com/2017/05/javascript-object-sql-group-by.html
+                this.userProgressbyDateList = this.groupByYmd(this.userProgressList)
+                console.log(this.userProgressbyDateList)
             },
             getFirstDayOfLastMonth: function() {
                 var date = new Date()
@@ -111,6 +132,25 @@
                 console.log(firstDayOfLastMonth)
 
                 return firstDayOfLastMonth
+            },
+            groupByYmd: function(userProgressList) {
+                var group = userProgressList.reduce(function (result, current) {
+                    var element = result.find(function (p) {
+                        return p.ymd === current.ymd
+                    });
+                    if (element) {
+                        element.count ++; // count
+                        element.progress += current.progress; // sum
+                    } else {
+                        result.push({
+                            ymd: current.ymd,
+                            count: 1,
+                            progress: current.progress
+                        });
+                    }
+                    return result;
+                }, []);
+                return group
             }
         }
     }
