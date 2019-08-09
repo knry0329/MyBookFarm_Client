@@ -1,5 +1,5 @@
 <template>
-    <el-row :gutter="20">
+    <el-row>
         <navmenu index="3"/>
         <el-col :span="24" v-loading="loading" >
             <el-card class="box-card">
@@ -12,35 +12,32 @@
                         <el-image  v-if="'imageLinks' in bookDetail" :src="bookDetail.imageLinks.thumbnail"/>
                     </div>
                 </el-col>
-                <el-col :span="8">
+                <el-col :span="6" :offset="1">
                     <div class="detailArea">
                         <p>書籍名: {{bookDetail.title}}</p>
-                        <p>著者: {{bookDetail.authors.length == 1 ? bookDetail.authors[0] : bookDetail.authors.join(',')}}</p>
+                        <p>著者: {{!Array.isArray(bookDetail.authors) ? bookDetail.authors : bookDetail.authors.join(',')}}</p>
                         <p>ページ数: {{getPage()== -1? "不明" : getPage()}}</p>
                     </div>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="7">
                     <div class="progressArea">
-                        <!-- <p>書籍名: {{bookDetail.Item.title}}</p>
-                        <p>著者: {{bookDetail.Item.author}}</p>
-                        <p>ページ数: {{getPage()}}</p> -->
                         <div class="block">
-                            <p class="demonstration">ページ進捗</p>
-                            <div id="progress-switch">
-                                <el-switch
-                                    v-model="bookUserDetail.progress"
-                                    active-text="読了"
-                                    :active-value="getPage()"
-                                >
-                                </el-switch>
-                            </div>
+                            <p class="demonstration">・何ページまで読み進めましたか？</p>
                             <el-slider 
                                 v-model="bookUserDetail.progress"
                                 :min=0
                                 :max="getPage()"
                                 show-input></el-slider>
                         </div>
-                        <p>書籍メモ</p>
+                        <div id="progress-switch">
+                            <el-switch
+                                v-model="bookUserDetail.progress"
+                                active-text="読み終わりました！"
+                                :active-value="getPage()"
+                            >
+                            </el-switch>
+                        </div>
+                        <p style="padding-top:2em;">・書籍メモ：気づいたことや学んだことを記載しておきましょう</p>
                         <!-- <markdown v-model="memo1"/> -->
                         <el-input
                             type="textarea"
@@ -59,14 +56,34 @@
                         </div>
                     </div>
                 </el-col>
+                <el-col :span="10" :offset="5">
+                    <div id="logArea">読書ログ</div>
+                    <el-table
+                        :data="userProgressList"
+                        style="width: 100%">
+                        <el-table-column
+                            prop="ymd"
+                            label="更新した時間"
+                        />
+                        <el-table-column
+                            prop="progress"
+                            label="進捗"
+                        >
+                            <template slot-scope="scope">
+                                <div v-if="scope.row.progress > 0">{{scope.row.progress}}ページ読み進めました！</div> 
+                                <div v-else>{{scope.row.progress * (-1)}}ページ戻りました。</div> 
+                            </template>
+                        </el-table-column>
+
+                    </el-table>            
+
+                </el-col>
             </el-card>
         </el-col>
     </el-row>
 </template>
 
 <script>
-/* eslint-disable no-console */
-
     import axios from 'axios'
     import Navmenu from '../views/Navmenu'
     // import markdown from '../views/MarkDown'
@@ -76,15 +93,15 @@
 
     export default {
         name: 'BookDetail',
-        components: { Navmenu},
+        components: { Navmenu },
         data () {
             return {
                 uid: undefined,
                 isbn: undefined,
                 beforeProgress: undefined,
                 bookDetail: {},
-                bookDetailOpenBD: {},
                 bookUserDetail: {},
+                userProgressList: [],
                 bookUserRequest: {},
                 userProgressRequest: {},
                 loading:false
@@ -105,11 +122,17 @@
                 this.uid = uid
                 //書籍APIから書籍情報を取得
                 this.searchBookIsbn()
-                // //書籍APIから書籍情報を取得
-                // this.searchBookIsbnOpenBD()
-
                 //サーバのAPIからユーザの書籍情報を取得
                 this.searchBookUser(uid)
+                //書籍の進捗状況を確認
+                this.searchUserProgress(uid, this.isbn)
+            },
+            searchUserProgress: async function(uid, isbn) {
+                const url = 'http://localhost:8090/user/progress/'+uid
+                const res = await axios.get(url)
+                this.userProgressList = res.data.tuserProgressList.filter(obj => obj.isbn == isbn)
+
+
             },
             searchBookIsbn: async function () {
                 const url = 
@@ -119,23 +142,10 @@
                 const res = await axios.get(url)
                 this.bookDetail = res.data.items[0].volumeInfo
             },
-            // searchBookIsbnOpenBD: async function () {
-            //     const url = 
-            //         bookApiConfig.urlOpenBD
-            //         + '?isbn=' 
-            //         + this.isbn
-            //     console.log('url : '+ url)
-            //     const res = await axios.get(url)
-            //     console.log('res : ' + res)
-            //     this.bookDetailOpenBD = res.data[0]
-            //     console.log(this.bookDetailOpenBD)
-            //     // return res
-            // },
             searchBookUser: async function (uid) {
                 const url = 'http://localhost:8090/book/'+uid+'/'+this.isbn
                 const res = await axios.get(url)
                 this.bookUserDetail = res.data.rbookUserList[0]
-                console.log(this.bookUserDetail.isbn)
                 this.beforeProgress = res.data.rbookUserList[0].progress
             },
             updateUserBook: async function() {
@@ -145,7 +155,6 @@
                 this.bookUserRequest.progress = this.bookUserDetail.progress
                 this.bookUserRequest.status = this.updateStatus(this.getPage(), this.bookUserDetail.progress)
                 this.bookUserRequest.memo = this.bookUserDetail.memo
-                console.log(this.bookUserRequest)
                 const url = 'http://localhost:8090/book'
                 const res = await axios.put(url, this.bookUserRequest)
                 
@@ -189,7 +198,7 @@
     @import "../styles/base";
     .detailArea {
         text-align:left;
-        padding-left:2em;
+        // padding-left:2em;
     }
     .progressArea {
         text-align:left;
@@ -205,5 +214,8 @@
     }
     #progress-switch {
         margin-top:1em;
+    }
+    #logArea {
+        text-align:left;
     }
 </style>
