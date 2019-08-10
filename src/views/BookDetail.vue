@@ -56,7 +56,7 @@
                         </div>
                     </div>
                 </el-col>
-                <el-col :span="10" :offset="5">
+                <el-col :span="13" :offset="8">
                     <div id="logArea">読書ログ</div>
                     <el-table
                         :data="userProgressList"
@@ -74,9 +74,10 @@
                                 <div v-else>{{scope.row.progress * (-1)}}ページ戻りました。</div> 
                             </template>
                         </el-table-column>
-
                     </el-table>            
-
+                </el-col>
+                <el-col :span="13" :offset="8">
+                    <div id="relationArea">この本を読んでいる他のユーザ</div>
                 </el-col>
             </el-card>
         </el-col>
@@ -202,6 +203,10 @@
     }
     .progressArea {
         text-align:left;
+    }
+    #relationArea {
+        text-align:left;
+        margin-top:1em;
     }
     .box-card {
         padding-bottom: 200px;

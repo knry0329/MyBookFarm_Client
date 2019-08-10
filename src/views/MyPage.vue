@@ -6,17 +6,23 @@
                 <div slot="header" class="clearfix">
                     <span>マイページ</span>
                 </div>
-                <el-col :span="6" :offset="3">
+                <el-col :span="9" :offset="3">
                     <!-- <div class="imageArea">
                         <img :src="bookDetail.Item.largeImageUrl"/>
                     </div> -->
                     <!-- </el-col>
                 <el-col :span="6"> -->
                     <div class="detailArea">
-                        <p>ユーザ名: {{userDetail.uname}}</p>
+                        
+                        <el-avatar :size="100" :src="circleUrl">
+                        </el-avatar>
+                        <p>ユーザ名</p>
+                        <p>{{userDetail.uname}}</p>
+                        <p>自己紹介 </p>
+                        <p> {{userDetail.description}}</p>
                     </div>
                 </el-col>
-                <el-col :span="9" :offset="3">
+                <el-col :span="9" :offset="0">
                     <div class="detailArea">
                         <!-- <p>書籍名: {{bookDetail.Item.title}}</p>
                         <p>著者: {{bookDetail.Item.author}}</p>
@@ -26,7 +32,8 @@
                             <!-- <el-calendar v-model="nowDate"></el-calendar> -->
                             <v-calendar :attributes="attrs"
                                         :columns="1"
-                                        :from-date="new Date()" ></v-calendar>
+                                        :from-date="firstDay" >
+                            </v-calendar>
                         </div>
                         <p>書籍メモ</p>
                     </div>
@@ -68,6 +75,8 @@
                         },
                     }
                 ],
+                circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
+                firstDay: undefined
 
             }
         },
@@ -84,6 +93,8 @@
         methods: {
             refresh: async function (uid) {
                 this.uid = uid
+
+                this.getLastMonth()
                 //サーバのAPIからユーザの書籍情報を取得
                 await this.searchUser(uid)
 
@@ -106,10 +117,8 @@
                 console.log(res.data.tuserProgressList)
                 var tmpList = []
                 for(var tuserProgress of res.data.tuserProgressList) {
-                    console.log(tuserProgress)
                     var tmp = tuserProgress
                     var ymdhms = tuserProgress.ymd
-                    // console.log(ymdhms)
                     tmp.ymd = ymdhms.substr(0, 4) + ymdhms.substr(5, 2) + ymdhms.substr(8, 2)
                     tmpList.push(tmp)
 
@@ -122,16 +131,6 @@
                 //https://zukucode.com/2017/05/javascript-object-sql-group-by.html
                 this.userProgressbyDateList = this.groupByYmd(this.userProgressList)
                 console.log(this.userProgressbyDateList)
-            },
-            getFirstDayOfLastMonth: function() {
-                var date = new Date()
-                var year = date.getYear()
-                var month = date.getMonth()
-
-                var firstDayOfLastMonth = new Date(year, month-1, 1)
-                console.log(firstDayOfLastMonth)
-
-                return firstDayOfLastMonth
             },
             groupByYmd: function(userProgressList) {
                 var group = userProgressList.reduce(function (result, current) {
@@ -151,6 +150,15 @@
                     return result;
                 }, []);
                 return group
+            },
+            getLastMonth: function() {
+                var date = new Date();
+                var year = date.getFullYear();
+                var month = date.getMonth();
+
+                var firstDayOfLastMonth = new Date(year, month-1, 1);
+                this.firstDay = firstDayOfLastMonth
+                console.log(this.firstDay)
             }
         }
     }
