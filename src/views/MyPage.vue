@@ -32,7 +32,13 @@
                             <!-- <el-calendar v-model="nowDate"></el-calendar> -->
                             <v-calendar :attributes="attrs"
                                         :columns="1"
-                                        :from-date="firstDay" >
+                                        :from-date="firstDay"
+                                        :is-expanded="true" >
+                                <template slot='day-content' slot-scope='props'>
+                                    <div class="vc-day-content">
+                                        <div v-bind:style="addStyleTextColor(props.day.weekday)">
+                                            {{ props.day.day }}</div>
+                                    </div></template>
                             </v-calendar>
                         </div>
                         <p>書籍メモ</p>
@@ -63,13 +69,21 @@
                 userProgressList: {},
                 userProgressbyDateList: {},
                 nowdate: new Date(),
+                dateList: new Date(),
                 attrs: [
                     {
-                        key: 'today',
+                        key: 'hoge',
                         highlight: {
-                            backgroundColor: '#ff8080',
+                            animated: true,
+                            height: '1.8rem',
+                            color: 'red',
+                            borderColor: null,
+                            borderWidth: '1px',
+                            borderStyle:'solid',
+                            borderRadius:'1.8rem',
+                            opacity: 1
                         },
-                        dates: new Date(),
+                        dates: this.dateList,
                         popover: {
                             label: 'メッセージを表示できます',
                         },
@@ -88,6 +102,7 @@
                     this.refresh(this.user.uid)
                 } else {
                 }
+
             })
         },
         methods: {
@@ -104,6 +119,21 @@
                 var yyyymm = y + '' + m
 
                 await this.searchUserProgress(uid, yyyymm)
+
+                var datea = new Date("2019/08/03")
+                this.dateList.push(datea)
+
+            },
+            addStyleTextColor: function(weekday) {
+                if (weekday === 1) {
+                    return {
+                        color: "red"
+                    };
+                } else if (weekday === 7) {
+                    return {
+                        color: "#00c0ff"
+                    };
+                }
             },
             searchUser: async function (uid) {
                 const url = 'http://localhost:8090/user/'+uid
@@ -159,6 +189,9 @@
                 var firstDayOfLastMonth = new Date(year, month-1, 1);
                 this.firstDay = firstDayOfLastMonth
                 console.log(this.firstDay)
+            },
+            strToDate: function(ymd) {
+                return new Date(Number(ymd.substr(0,4)), Number(ymd,substr(4,2))-1, Number(ymd.substr(6,2)))
             }
         }
     }
