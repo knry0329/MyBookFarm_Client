@@ -38,7 +38,21 @@
                                     <div class="vc-day-content">
                                         <div v-bind:style="addStyleTextColor(props.day.weekday)">
                                             {{ props.day.day }}</div>
-                                    </div></template>
+                                    </div>
+                                    <!-- <div class="square" v-if="dateToYYYYMMDD(props.day.date)" style="text-align:center;">
+                                        {{props.day.date == new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).toString()}}
+                                    </div> -->
+                                    <div class="square" v-if="dateList.indexOf(dateToYYYYMMDD(props.day.date)) >= 0" style="text-align:center;">
+                                        <!-- {{dateToYYYYMMDD(props.day.date)}} -->
+                                        {{ userProgressbyDateList.filter(obj => {return obj["ymd"]===dateToYYYYMMDD(props.day.date) } ) }}
+                                    </div>
+                                    <!-- <div class="square" v-else-if="props.day.date == new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).toString()" style="text-align:center;">
+                                        zzz
+                                    </div>
+                                    <div class="circle" v-else style="text-align:center"> -->
+                                    <!-- 
+                                    </div> -->
+                                </template>
                             </v-calendar>
                         </div>
                         <p>書籍メモ</p>
@@ -69,7 +83,7 @@
                 userProgressList: {},
                 userProgressbyDateList: {},
                 nowdate: new Date(),
-                dateList: new Date(),
+                dateList: [],
                 attrs: [
                     {
                         key: 'hoge',
@@ -83,7 +97,7 @@
                             borderRadius:'1.8rem',
                             opacity: 1
                         },
-                        dates: this.dateList,
+                        dates: undefined,
                         popover: {
                             label: 'メッセージを表示できます',
                         },
@@ -109,6 +123,8 @@
             refresh: async function (uid) {
                 this.uid = uid
 
+                this.attrs.dates = this.dateList
+
                 this.getLastMonth()
                 //サーバのAPIからユーザの書籍情報を取得
                 await this.searchUser(uid)
@@ -120,8 +136,7 @@
 
                 await this.searchUserProgress(uid, yyyymm)
 
-                var datea = new Date("2019/08/03")
-                this.dateList.push(datea)
+
 
             },
             addStyleTextColor: function(weekday) {
@@ -161,6 +176,15 @@
                 //https://zukucode.com/2017/05/javascript-object-sql-group-by.html
                 this.userProgressbyDateList = this.groupByYmd(this.userProgressList)
                 console.log(this.userProgressbyDateList)
+
+                //**********/
+                var tmpdateList = this.userProgressbyDateList.map(function(row) {
+                    return [row["ymd"]]
+                }).reduce(function(a,b) {
+                    return a.concat(b)
+                })
+                this.dateList = tmpdateList
+                console.log(this.dateList)
             },
             groupByYmd: function(userProgressList) {
                 var group = userProgressList.reduce(function (result, current) {
@@ -192,6 +216,23 @@
             },
             strToDate: function(ymd) {
                 return new Date(Number(ymd.substr(0,4)), Number(ymd,substr(4,2))-1, Number(ymd.substr(6,2)))
+            },
+            dateToYYYYMMDD: function(date) {
+                var y = date.getFullYear();
+                var m = ("00" + (date.getMonth()+1)).slice(-2);
+                var d = ("00" + date.getDate()).slice(-2);
+                var result = y + "" + m + "" + d;
+                return result;
+            },
+            findDateObj: function(date) {
+                const target = this.userProgressbyDateList.find((userProgress) => {
+                    return userProgress.ymd === this.dateToYYYYMMDD(date)
+                })
+                if(target) {
+                    return target
+                } else {
+                    return false
+                }
             }
         }
     }
@@ -214,5 +255,12 @@
     }
     #progress-switch {
         margin-top:1em;
+    }
+    .square {
+        text-align:center;
+        margin:auto;
+        width:20px;
+        height:20px;
+        background:yellow;
     }
 </style>
