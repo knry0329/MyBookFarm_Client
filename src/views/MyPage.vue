@@ -7,11 +7,6 @@
                     <span>マイページ</span>
                 </div>
                 <el-col :span="9" :offset="3">
-                    <!-- <div class="imageArea">
-                        <img :src="bookDetail.Item.largeImageUrl"/>
-                    </div> -->
-                    <!-- </el-col>
-                <el-col :span="6"> -->
                     <div class="detailArea">
                         
                         <el-avatar :size="100" :src="circleUrl">
@@ -24,12 +19,8 @@
                 </el-col>
                 <el-col :span="9" :offset="0">
                     <div class="detailArea">
-                        <!-- <p>書籍名: {{bookDetail.Item.title}}</p>
-                        <p>著者: {{bookDetail.Item.author}}</p>
-                        <p>ページ数: {{getPage()}}</p> -->
                         <div class="block">
                             <p class="demonstration">カレンダー</p>
-                            <!-- <el-calendar v-model="nowDate"></el-calendar> -->
                             <v-calendar :attributes="attrs"
                                         :columns="1"
                                         :from-date="firstDay"
@@ -39,19 +30,17 @@
                                         <div v-bind:style="addStyleTextColor(props.day.weekday)">
                                             {{ props.day.day }}</div>
                                     </div>
-                                    <!-- <div class="square" v-if="dateToYYYYMMDD(props.day.date)" style="text-align:center;">
-                                        {{props.day.date == new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).toString()}}
-                                    </div> -->
-                                    <div class="square" v-if="dateList.indexOf(dateToYYYYMMDD(props.day.date)) >= 0" style="text-align:center;">
-                                        <!-- {{dateToYYYYMMDD(props.day.date)}} -->
-                                        {{ userProgressbyDateList.filter(obj => {return obj["ymd"]===dateToYYYYMMDD(props.day.date) } ) }}
-                                    </div>
-                                    <!-- <div class="square" v-else-if="props.day.date == new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).toString()" style="text-align:center;">
-                                        zzz
-                                    </div>
-                                    <div class="circle" v-else style="text-align:center"> -->
-                                    <!-- 
-                                    </div> -->
+                                    <template v-if="dateList.indexOf(dateToYYYYMMDD(props.day.date)) >= 0" style="text-align:center;">
+                                        <div class="square_0" v-if="getDateToPages(dateToYYYYMMDD(props.day.date)) <= 0" ></div>
+                                        <div class="square_1" v-if="0 < getDateToPages(dateToYYYYMMDD(props.day.date)) && getDateToPages(dateToYYYYMMDD(props.day.date)) < 30" ></div>
+                                        <div class="square_2" v-else-if="30 <= getDateToPages(dateToYYYYMMDD(props.day.date)) && getDateToPages(dateToYYYYMMDD(props.day.date)) < 50" ></div>
+                                        <div class="square_3" v-else-if="50 <= getDateToPages(dateToYYYYMMDD(props.day.date)) && getDateToPages(dateToYYYYMMDD(props.day.date)) < 70" ></div>
+                                        <div class="square_4" v-else-if="70 <= getDateToPages(dateToYYYYMMDD(props.day.date)) && getDateToPages(dateToYYYYMMDD(props.day.date)) < 100" ></div>
+                                        <div class="square_5" v-else-if="100 <= getDateToPages(dateToYYYYMMDD(props.day.date)) " ></div>
+                                    </template>
+                                    <template v-if="dateList.indexOf(dateToYYYYMMDD(props.day.date)) < 0" style="text-align:center;">
+                                        <div class="square_0"></div>
+                                    </template>
                                 </template>
                             </v-calendar>
                         </div>
@@ -76,14 +65,17 @@
         components: { Navmenu },
         data () {
             return {
-                first: undefined,
                 uid: undefined,
+                //サーバから取得したユーザ情報
                 userDetail: {},
-                bookUserRequest: {},
+                //サーバから取得した本の進捗情報
                 userProgressList: {},
+                //サーバから取得した本の進捗方法を日毎にサマリしたもの
                 userProgressbyDateList: {},
-                nowdate: new Date(),
+                //userProgressbyDateListの日付のみを格納したList
                 dateList: [],
+                circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
+                firstDay: undefined,
                 attrs: [
                     {
                         key: 'hoge',
@@ -103,40 +95,34 @@
                         },
                     }
                 ],
-                circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
-                firstDay: undefined
-
             }
         },
         created: async function () {
             firebase.auth().onAuthStateChanged(user => {
-                this.first = this.getFirstDayOfLastMonth
                 this.user = user ? user : {}
                 if (user) {
                     this.refresh(this.user.uid)
                 } else {
                 }
-
             })
         },
         methods: {
+            getDateToPages: function (dateYYYYMMDD) {
+                const result = this.userProgressbyDateList.filter(userProgress => {
+                    return userProgress["ymd"]===dateYYYYMMDD
+                })
+                return result[0]["progress"]
+            },
             refresh: async function (uid) {
                 this.uid = uid
-
                 this.attrs.dates = this.dateList
-
                 this.getLastMonth()
-                //サーバのAPIからユーザの書籍情報を取得
                 await this.searchUser(uid)
-
                 var dt = new Date();
                 var y = dt.getFullYear();
                 var m = ("00" + (dt.getMonth()+1)).slice(-2);
                 var yyyymm = y + '' + m
-
                 await this.searchUserProgress(uid, yyyymm)
-
-
 
             },
             addStyleTextColor: function(weekday) {
@@ -159,32 +145,26 @@
             searchUserProgress: async function (uid, yyyymm) {
                 const url = 'http://localhost:8090/user/progress/'+uid+ '/'+yyyymm
                 const res = await axios.get(url)
-                console.log(res.data.tuserProgressList)
+
+                //日付のフォーマット
                 var tmpList = []
                 for(var tuserProgress of res.data.tuserProgressList) {
                     var tmp = tuserProgress
                     var ymdhms = tuserProgress.ymd
                     tmp.ymd = ymdhms.substr(0, 4) + ymdhms.substr(5, 2) + ymdhms.substr(8, 2)
                     tmpList.push(tmp)
-
                 }
-                console.log(tmpList)
-
-                //resをフィールド変数に格納
                 this.userProgressList = tmpList
+
                 //日付ごとに集約して、別のフィールド変数に格納
                 //https://zukucode.com/2017/05/javascript-object-sql-group-by.html
                 this.userProgressbyDateList = this.groupByYmd(this.userProgressList)
-                console.log(this.userProgressbyDateList)
-
-                //**********/
                 var tmpdateList = this.userProgressbyDateList.map(function(row) {
                     return [row["ymd"]]
                 }).reduce(function(a,b) {
                     return a.concat(b)
                 })
                 this.dateList = tmpdateList
-                console.log(this.dateList)
             },
             groupByYmd: function(userProgressList) {
                 var group = userProgressList.reduce(function (result, current) {
@@ -214,9 +194,6 @@
                 this.firstDay = firstDayOfLastMonth
                 console.log(this.firstDay)
             },
-            strToDate: function(ymd) {
-                return new Date(Number(ymd.substr(0,4)), Number(ymd,substr(4,2))-1, Number(ymd.substr(6,2)))
-            },
             dateToYYYYMMDD: function(date) {
                 var y = date.getFullYear();
                 var m = ("00" + (date.getMonth()+1)).slice(-2);
@@ -224,16 +201,6 @@
                 var result = y + "" + m + "" + d;
                 return result;
             },
-            findDateObj: function(date) {
-                const target = this.userProgressbyDateList.find((userProgress) => {
-                    return userProgress.ymd === this.dateToYYYYMMDD(date)
-                })
-                if(target) {
-                    return target
-                } else {
-                    return false
-                }
-            }
         }
     }
 </script>
@@ -256,11 +223,29 @@
     #progress-switch {
         margin-top:1em;
     }
-    .square {
+    @mixin square-mixin($color) {
         text-align:center;
         margin:auto;
         width:20px;
         height:20px;
-        background:yellow;
+        background:$color;
+    }
+    .square_0 {
+        @include square-mixin(#ffffff)
+    }
+    .square_1 {
+        @include square-mixin(#dcf8f8)
+    }
+    .square_2 {
+        @include square-mixin(#95eaea)
+    }
+    .square_3 {
+        @include square-mixin(#4edcdc)
+    }
+    .square_4 {
+        @include square-mixin(#23b1b1)
+    }
+    .square_5 {
+        @include square-mixin(#156a6a)
     }
 </style>
