@@ -6,7 +6,7 @@
                 <div slot="header" class="clearfix">
                     <span>書籍詳細</span>
                 </div>
-                <el-col :span="3" :offset="4">
+                <el-col :span="2" :offset="3">
                     <div class="imageArea">
                         <!-- <img :src="bookDetail.Item.largeImageUrl"/> -->
                         <el-image  v-if="'imageLinks' in bookDetail" :src="bookDetail.imageLinks.thumbnail"/>
@@ -14,12 +14,15 @@
                 </el-col>
                 <el-col :span="6" :offset="1">
                     <div class="detailArea">
-                        <p>書籍名: {{bookDetail.title}}</p>
-                        <p>著者: {{!Array.isArray(bookDetail.authors) ? bookDetail.authors : bookDetail.authors.join(',')}}</p>
-                        <p>ページ数: {{getPage()== -1? "不明" : getPage()}}</p>
+                        <p class="label">書籍名:</p> 
+                        <p>{{bookDetail.title}}</p>
+                        <p class="label">著者</p>
+                        <p> {{!Array.isArray(bookDetail.authors) ? bookDetail.authors : bookDetail.authors.join(',')}}</p>
+                        <p class="label">ページ数:</p>
+                        <p> {{getPage()== -1? "不明" : getPage()}}</p>
                     </div>
                 </el-col>
-                <el-col :span="7">
+                <el-col :span="7" :offset="1">
                     <div class="progressArea">
                         <div class="block">
                             <p class="demonstration">・何ページまで読み進めましたか？</p>
@@ -197,6 +200,9 @@
 
 <style scoped lang="scss">
     @import "../styles/base";
+    .label {
+        border-bottom: solid 1px #efefef;
+    }
     .detailArea {
         text-align:left;
         // padding-left:2em;
