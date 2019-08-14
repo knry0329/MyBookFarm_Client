@@ -6,15 +6,17 @@
                 <div slot="header" class="clearfix">
                     <span>マイページ</span>
                 </div>
-                <el-col :span="9" :offset="3">
+                <el-col :span="9" :offset="2">
                     <div class="detailArea">
                         
-                        <el-avatar :size="100" :src="circleUrl">
+                        <el-avatar id="avatar" :size="150" :src="circleUrl">
                         </el-avatar>
-                        <p>ユーザ名</p>
-                        <p>{{userDetail.uname}}</p>
-                        <p>自己紹介 </p>
-                        <p> {{userDetail.description}}</p>
+                        <div class="detailItem">
+                            <p>ユーザ名</p>
+                            <p>{{userDetail.uname}}</p>
+                            <p>自己紹介 </p>
+                            <p> {{userDetail.description}}</p>
+                        </div>
                     </div>
                 </el-col>
                 <el-col :span="9" :offset="0">
@@ -268,5 +270,15 @@
     .hanreiArea {
         margin-top:10px;
         overflow: hidden;
+    }
+
+    .detailItem {
+        float: right;
+    }
+    .detailArea {
+        overflow: hidden;
+    }
+    #avatar {
+        margin-top:10px;
     }
 </style>

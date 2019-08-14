@@ -25,7 +25,7 @@
                 <el-col :span="7" :offset="1">
                     <div class="progressArea">
                         <div class="block">
-                            <p class="demonstration">・何ページまで読み進めましたか？</p>
+                            <p class="label">何ページまで読み進めましたか？</p>
                             <el-slider 
                                 v-model="bookUserDetail.progress"
                                 :min=0
@@ -40,7 +40,7 @@
                             >
                             </el-switch>
                         </div>
-                        <p style="padding-top:2em;">・書籍メモ：気づいたことや学んだことを記載しておきましょう</p>
+                        <p class="label" style="padding-top:2em;">書籍メモ：気づいたことや学んだことを記載しておきましょう</p>
                         <!-- <markdown v-model="memo1"/> -->
                         <el-input
                             type="textarea"
@@ -59,8 +59,10 @@
                         </div>
                     </div>
                 </el-col>
-                <el-col :span="13" :offset="8">
-                    <div id="logArea">読書ログ</div>
+                <el-col :span="14" :offset="6">
+                    <div id="logArea">
+                        <p class="label">読書ログ</p>
+                    </div>
                     <el-table
                         :data="userProgressList"
                         style="width: 100%">
@@ -79,8 +81,10 @@
                         </el-table-column>
                     </el-table>            
                 </el-col>
-                <el-col :span="13" :offset="8">
-                    <div id="relationArea">この本を読んでいる他のユーザ</div>
+                <el-col :span="14" :offset="6">
+                    <div id="relationArea">
+                        <p class="label">この本を読んでいる他のユーザ</p>
+                    </div>
                 </el-col>
             </el-card>
         </el-col>
@@ -228,5 +232,10 @@
     }
     #logArea {
         text-align:left;
+        margin-top: 2em;
+    }
+    #relationArea {
+        text-align:left;
+        margin-top: 2em;
     }
 </style>

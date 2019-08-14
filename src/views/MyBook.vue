@@ -92,6 +92,9 @@
                     var tmpbookinfo = {}
                     tmpbookinfo.isbn = ob
                     tmpbookinfo.bookinfo = await this.searchBookIsbn(ob.isbn)
+                    if(tmpbookinfo.bookinfo.volumeInfo.authors) {
+                        tmpbookinfo.bookinfo.volumeInfo.authors = tmpbookinfo.bookinfo.volumeInfo.authors.join(',')
+                    }
                     tmpList.push(tmpbookinfo)
                 })
                 this.bookinfoList = tmpList
