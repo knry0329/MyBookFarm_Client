@@ -65,7 +65,7 @@
                                 size="mini"
                                 type="danger"
                                 :disabled="scope.row.volumeInfo.industryIdentifiers==undefined || scope.row.volumeInfo.industryIdentifiers.length ==0"
-                                @click="registbook(scope.row.volumeInfo.industryIdentifiers[0].identifier)">読んだ本として追加</el-button>
+                                @click="registbook(scope.row.volumeInfo.industryIdentifiers[0].identifier)">MyBookに追加</el-button>
                         </template>
                     </el-table-column>
                 </el-table>            

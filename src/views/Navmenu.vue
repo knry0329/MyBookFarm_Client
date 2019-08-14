@@ -4,9 +4,9 @@
         class="el-menu-demo"
         mode="horizontal"
         @select="handleSelect"
-        background-color="#545c64"
+        background-color="#95dc4e"
         text-color="#fff"
-        active-text-color="#ffd04b"
+        active-text-color="#2b470e"
         router>
         <el-menu-item index="1" :route="{name: 'mypage'}">My Page</el-menu-item>
         <el-menu-item index="2" :route="{name: 'searchbook'}">Search Book</el-menu-item>
@@ -62,4 +62,9 @@
 
 </script>
 <style lang="scss">
+
+// el-menu-item {
+//     font-weight:bold;
+// }
+
 </style>

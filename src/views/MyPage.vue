@@ -1,5 +1,5 @@
 <template>
-    <el-row :gutter="20">
+    <el-row>
         <navmenu index="1"/>
         <el-col :span="24" >
             <el-card class="box-card">
@@ -16,7 +16,16 @@
                             <p>{{userDetail.uname}}</p>
                             <p>自己紹介 </p>
                             <p> {{userDetail.description}}</p>
+                            <div id="update-button-area">
+                                <el-button 
+                                    id="update-button"
+                                    size="mini"
+                                    type="success"
+                                >編集
+                                </el-button>
+                            </div>
                         </div>
+
                     </div>
                 </el-col>
                 <el-col :span="9" :offset="0">
@@ -221,6 +230,7 @@
 
 <style scoped lang="scss">
     @import "../styles/base";
+    @import "../styles/colors";
     .detailArea {
         text-align:left;
         padding-left:10em;
@@ -246,22 +256,22 @@
         border:solid 1px #efefef;
     }
     .square_0 {
-        @include square-mixin(#ffffff)
+        @include square-mixin($COLOR_0)
     }
     .square_1 {
-        @include square-mixin(#dcf8f8)
+        @include square-mixin($COLOR_1)
     }
     .square_2 {
-        @include square-mixin(#95eaea)
+        @include square-mixin($COLOR_2)
     }
     .square_3 {
-        @include square-mixin(#4edcdc)
+        @include square-mixin($COLOR_3)
     }
     .square_4 {
-        @include square-mixin(#23b1b1)
+        @include square-mixin($COLOR_4)
     }
     .square_5 {
-        @include square-mixin(#156a6a)
+        @include square-mixin($COLOR_5)
     }
     .hanrei {
         float: right;
@@ -280,5 +290,13 @@
     }
     #avatar {
         margin-top:10px;
+    }
+    // #update-button {
+    //     float:right;
+    //     display:block;
+    //     margin: 0 0 0 auto;
+    // }
+    #update-button-area {
+        text-align: right;
     }
 </style>

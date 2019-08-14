@@ -1,7 +1,7 @@
 <template>
     <el-container id="app">
         <el-header id="nav"><global-header/></el-header>
-        <el-main><router-view/></el-main>
+        <el-main id="elmain"><router-view/></el-main>
     </el-container>
 </template>
 
@@ -31,5 +31,8 @@
       color: #42b983;
     }
   }
+}
+#elmain {
+  padding-top:0px;
 }
 </style>
