@@ -20,14 +20,16 @@
                 <el-col :span="9" :offset="0">
                     <div class="detailArea">
                         <div class="block">
-                            <p class="demonstration">カレンダー</p>
+                            <p class="demonstration">進捗カレンダー</p>
                             <v-calendar :attributes="attrs"
                                         :columns="1"
-                                        :from-date="firstDay"
-                                        :is-expanded="true" >
+                                        :max-date='new Date()'
+                                        :is-expanded="true"
+                                        @update:fromPage="move" 
+                            >
                                 <template slot='day-content' slot-scope='props'>
                                     <div class="vc-day-content">
-                                        <div v-bind:style="addStyleTextColor(props.day.weekday)">
+                                        <div v-bind:style="addStyleTextColor(props.day)">
                                             {{ props.day.day }}</div>
                                     </div>
                                     <template v-if="dateList.indexOf(dateToYYYYMMDD(props.day.date)) >= 0" style="text-align:center;">
@@ -43,6 +45,16 @@
                                     </template>
                                 </template>
                             </v-calendar>
+                        </div>
+                        <div class='hanreiArea'>
+                            <div class="hanrei">　少ない　</div>
+                            <div class="square_0 hanrei"></div>
+                            <div class="square_1 hanrei"></div>
+                            <div class="square_2 hanrei"></div>
+                            <div class="square_3 hanrei"></div>
+                            <div class="square_4 hanrei"></div>
+                            <div class="square_5 hanrei"></div>
+                            <div class="hanrei">　多い　</div>
                         </div>
                         <p>書籍メモ</p>
                     </div>
@@ -78,17 +90,9 @@
                 firstDay: undefined,
                 attrs: [
                     {
-                        key: 'hoge',
-                        highlight: {
-                            animated: true,
-                            height: '1.8rem',
-                            color: 'red',
-                            borderColor: null,
-                            borderWidth: '1px',
-                            borderStyle:'solid',
-                            borderRadius:'1.8rem',
-                            opacity: 1
-                        },
+                        key: 'today',
+                        color: 'red',
+                        dot: true,
                         dates: undefined,
                         popover: {
                             label: 'メッセージを表示できます',
@@ -125,12 +129,12 @@
                 await this.searchUserProgress(uid, yyyymm)
 
             },
-            addStyleTextColor: function(weekday) {
-                if (weekday === 1) {
+            addStyleTextColor: function(day) {
+                if (day.weekday === 1) {
                     return {
                         color: "red"
                     };
-                } else if (weekday === 7) {
+                } else if (day.weekday === 7) {
                     return {
                         color: "#00c0ff"
                     };
@@ -139,7 +143,6 @@
             searchUser: async function (uid) {
                 const url = 'http://localhost:8090/user/'+uid
                 const res = await axios.get(url)
-                console.log(res)
                 this.userDetail = res.data.muserList[0]
             },
             searchUserProgress: async function (uid, yyyymm) {
@@ -159,6 +162,8 @@
                 //日付ごとに集約して、別のフィールド変数に格納
                 //https://zukucode.com/2017/05/javascript-object-sql-group-by.html
                 this.userProgressbyDateList = this.groupByYmd(this.userProgressList)
+                console.log(this.userProgressbyDateList)
+                if(this.userProgressbyDateList.length == 0) return
                 var tmpdateList = this.userProgressbyDateList.map(function(row) {
                     return [row["ymd"]]
                 }).reduce(function(a,b) {
@@ -201,6 +206,13 @@
                 var result = y + "" + m + "" + d;
                 return result;
             },
+            move: async function(page) {
+                this.userProgressList = {}
+                this.userProgressbyDateList = {}
+                this.dateList = []
+                var yyyymm = page.year + ("0"+page.month).slice(-2)
+                await this.searchUserProgress(this.uid, yyyymm)
+            }
         }
     }
 </script>
@@ -229,6 +241,7 @@
         width:20px;
         height:20px;
         background:$color;
+        border:solid 1px #efefef;
     }
     .square_0 {
         @include square-mixin(#ffffff)
@@ -247,5 +260,13 @@
     }
     .square_5 {
         @include square-mixin(#156a6a)
+    }
+    .hanrei {
+        float: right;
+        
+    }
+    .hanreiArea {
+        margin-top:10px;
+        overflow: hidden;
     }
 </style>
