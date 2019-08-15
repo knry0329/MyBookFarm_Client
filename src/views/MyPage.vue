@@ -13,15 +13,35 @@
                         </el-avatar>
                         <div class="detailItem">
                             <p>ユーザ名</p>
-                            <p>{{userDetail.uname}}</p>
+                            <p v-if="refFlg" class="userNameArea">{{userDetail.uname}}</p>
+                            <el-input v-if="!refFlg" class="userNameArea" v-model="tmpUname"></el-input>
                             <p>自己紹介 </p>
-                            <p> {{userDetail.description}}</p>
+                            <p v-if="refFlg" class="descriptionArea"> {{userDetail.description}}</p>
+                            <el-input v-if="!refFlg" type="textarea" :rows="2" class="userNameArea" v-model="tmpDescription"></el-input>
                             <div id="update-button-area">
-                                <el-button 
+                                <el-button
+                                    v-if="refFlg" 
+                                    id="modify-button"
+                                    size="mini"
+                                    type="success"
+                                    @click="switchArea"
+                                >編集
+                                </el-button>
+                                <el-button
+                                    v-if="!refFlg" 
+                                    id="cancel-button"
+                                    size="mini"
+                                    type="info"
+                                    @click="switchArea"
+                                >キャンセル
+                                </el-button>
+                                <el-button
+                                    v-if="!refFlg" 
                                     id="update-button"
                                     size="mini"
                                     type="success"
-                                >編集
+                                    @click="updateUser"
+                                >更新
                                 </el-button>
                             </div>
                         </div>
@@ -110,6 +130,10 @@
                         },
                     }
                 ],
+                refFlg: true,
+                userRequest: {},
+                tmpUname: undefined,
+                tmpDescription: undefined,
             }
         },
         created: async function () {
@@ -121,6 +145,9 @@
                 }
             })
         },
+        computed: {
+
+        },
         methods: {
             getDateToPages: function (dateYYYYMMDD) {
                 const result = this.userProgressbyDateList.filter(userProgress => {
@@ -131,7 +158,7 @@
             refresh: async function (uid) {
                 this.uid = uid
                 this.attrs.dates = this.dateList
-                this.getLastMonth()
+                this.getLastMonth
                 await this.searchUser(uid)
                 var dt = new Date();
                 var y = dt.getFullYear();
@@ -155,6 +182,23 @@
                 const url = 'http://localhost:8090/user/'+uid
                 const res = await axios.get(url)
                 this.userDetail = res.data.muserList[0]
+            },
+            updateUser: async function () {
+                this.userRequest.uid = this.uid
+                this.userRequest.uname = this.tmpUname
+                this.userRequest.description = this.tmpDescription
+                const url = 'http://localhost:8090/user'
+                const res = await axios.put(url, this.userRequest)
+
+                this.$message({
+                    showClose: true,
+                    message: 'Update Success!',
+                    type: 'success'
+                })
+
+                this.switchArea()
+                this.refresh(this.uid)
+
             },
             searchUserProgress: async function (uid, yyyymm) {
                 const url = 'http://localhost:8090/user/progress/'+uid+ '/'+yyyymm
@@ -201,15 +245,6 @@
                 }, []);
                 return group
             },
-            getLastMonth: function() {
-                var date = new Date();
-                var year = date.getFullYear();
-                var month = date.getMonth();
-
-                var firstDayOfLastMonth = new Date(year, month-1, 1);
-                this.firstDay = firstDayOfLastMonth
-                console.log(this.firstDay)
-            },
             dateToYYYYMMDD: function(date) {
                 var y = date.getFullYear();
                 var m = ("00" + (date.getMonth()+1)).slice(-2);
@@ -223,7 +258,28 @@
                 this.dateList = []
                 var yyyymm = page.year + ("0"+page.month).slice(-2)
                 await this.searchUserProgress(this.uid, yyyymm)
-            }
+            },
+            switchArea: function() {
+                if(this.refFlg) {
+                    //参照からフォームへ繊維
+                    this.tmpUname = this.userDetail.uname
+                    this.tmpDescription = this.userDetail.description
+                } else {
+                    this.tmpUname = ''
+                    this.tmpDescription = ''
+                }
+                this.refFlg = !this.refFlg
+            },
+            getLastMonth: function() {
+                var date = new Date();
+                var year = date.getFullYear();
+                var month = date.getMonth();
+
+                var firstDayOfLastMonth = new Date(year, month-1, 1);
+                this.firstDay = firstDayOfLastMonth
+                console.log(this.firstDay)
+            },
+
         }
     }
 </script>
@@ -282,21 +338,22 @@
         overflow: hidden;
     }
 
-    .detailItem {
-        float: right;
-    }
-    .detailArea {
-        overflow: hidden;
-    }
-    #avatar {
-        margin-top:10px;
-    }
+    // .detailItem {
+    //     float: right;
+    // }
+    // .detailArea {
+    //     overflow: hidden;
+    // }
+    // #avatar {
+    //     margin-top:10px;
+    // }
     // #update-button {
     //     float:right;
     //     display:block;
     //     margin: 0 0 0 auto;
     // }
     #update-button-area {
-        text-align: right;
+        text-align: left;
     }
+
 </style>

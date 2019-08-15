@@ -8,8 +8,8 @@
         text-color="#fff"
         active-text-color="#2b470e"
         router>
-        <el-menu-item index="1" :route="{name: 'mypage'}">My Page</el-menu-item>
-        <el-menu-item index="2" :route="{name: 'searchbook'}">Search Book</el-menu-item>
+        <el-menu-item class="el-menu" index="1" :route="{name: 'mypage'}">My Page</el-menu-item>
+        <el-menu-item class="el-menu" index="2" :route="{name: 'searchbook'}">Search Book</el-menu-item>
         <!-- <el-submenu index="2">
             <template slot="title">Workspace</template>
             <el-menu-item index="2-1">item one</el-menu-item>
@@ -24,8 +24,8 @@
         </el-submenu>
         <el-menu-item index="3" disabled>Info</el-menu-item> -->
         <!-- <el-menu-item index="4"><a v-bind:href="mybook"></a>MyBook</el-menu-item> -->
-        <el-menu-item index="3" :route="{name: 'mybook'}">My Book</el-menu-item>
-        <el-menu-item index="4" @click="signout">Sign Out</el-menu-item>
+        <el-menu-item class="el-menu" index="3" :route="{name: 'mybook'}">My Book</el-menu-item>
+        <el-menu-item class="el-menu" index="4" @click="signout">Sign Out</el-menu-item>
     </el-menu>
 </template>
 
@@ -63,8 +63,8 @@
 </script>
 <style lang="scss">
 
-// el-menu-item {
-//     font-weight:bold;
-// }
+.el-menu {
+    font-weight:bold;
+}
 
 </style>
