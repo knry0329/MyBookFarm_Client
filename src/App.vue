@@ -2,14 +2,17 @@
     <el-container id="app">
         <el-header id="nav"><global-header/></el-header>
         <el-main id="elmain"><router-view/></el-main>
+        <global-footer/>
     </el-container>
 </template>
 
 <script>
     import GlobalHeader from './views/GlobalHeader'
+    import GlobalFooter from './views/GlobalFooter'
     export default {
         components: {
-            GlobalHeader
+            GlobalHeader,
+            GlobalFooter
         }
     }
 

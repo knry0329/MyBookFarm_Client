@@ -16,7 +16,8 @@
                             <p v-if="refFlg" class="userNameArea">{{userDetail.uname}}</p>
                             <el-input v-if="!refFlg" class="userNameArea" v-model="tmpUname"></el-input>
                             <p>自己紹介 </p>
-                            <p v-if="refFlg" class="descriptionArea"> {{userDetail.description}}</p>
+                            <!-- https://qiita.com/koji77/items/435c2410d9fd7d622f4c -->
+                            <p v-if="refFlg" style="white-space:pre-wrap; word-wrap:break-word;" class="descriptionArea">{{userDetail.description}}</p>
                             <el-input v-if="!refFlg" type="textarea" :rows="2" class="userNameArea" v-model="tmpDescription"></el-input>
                             <div id="update-button-area">
                                 <el-button
@@ -336,6 +337,9 @@
     .hanreiArea {
         margin-top:10px;
         overflow: hidden;
+    }
+    pre {
+
     }
 
     // .detailItem {
