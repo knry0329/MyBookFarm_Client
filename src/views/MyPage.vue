@@ -12,13 +12,13 @@
                         <el-avatar id="avatar" :size="150" :src="circleUrl">
                         </el-avatar>
                         <div class="detailItem">
-                            <p>ユーザ名</p>
+                            <p class="label">ユーザ名</p>
                             <p v-if="refFlg" class="userNameArea">{{userDetail.uname}}</p>
                             <el-input v-if="!refFlg" class="userNameArea" v-model="tmpUname"></el-input>
-                            <p>自己紹介 </p>
+                            <p class="label">自己紹介 </p>
                             <!-- https://qiita.com/koji77/items/435c2410d9fd7d622f4c -->
                             <p v-if="refFlg" style="white-space:pre-wrap; word-wrap:break-word;" class="descriptionArea">{{userDetail.description}}</p>
-                            <el-input v-if="!refFlg" type="textarea" :rows="2" class="userNameArea" v-model="tmpDescription"></el-input>
+                            <el-input v-if="!refFlg" type="textarea" :rows="5" class="userNameArea" v-model="tmpDescription"></el-input>
                             <div id="update-button-area">
                                 <el-button
                                     v-if="refFlg" 
@@ -55,7 +55,13 @@
                 <el-col :span="9" :offset="0">
                     <div class="detailArea">
                         <div class="block">
-                            <p class="demonstration">進捗カレンダー</p>
+                            <p class="demonstration label">進捗カレンダー
+                            <el-tooltip placement="top-end" effect="light">
+                                <div slot="content">たくさん本を読んだ日ほど、カレンダーの緑色が濃くなります。<br /> 草を生やしまくりましょう。</div>
+                                <i class="el-icon-question"></i>
+                            </el-tooltip>
+
+                            </p>
                             <v-calendar :attributes="attrs"
                                         :columns="1"
                                         :max-date='new Date()'
@@ -265,7 +271,7 @@
             },
             switchArea: function() {
                 if(this.refFlg) {
-                    //参照からフォームへ繊維
+                    //参照からフォームへ遷移
                     this.tmpUname = this.userDetail.uname
                     this.tmpDescription = this.userDetail.description
                 } else {
@@ -335,14 +341,15 @@
     }
     .hanrei {
         float: right;
+        font-size:60%
         
     }
     .hanreiArea {
         margin-top:10px;
         overflow: hidden;
     }
-    pre {
-
+    .label {
+        border-bottom: solid 1px #efefef;
     }
 
     // .detailItem {

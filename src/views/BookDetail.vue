@@ -25,7 +25,11 @@
                 <el-col :span="7" :offset="1">
                     <div class="progressArea">
                         <div class="block">
-                            <p class="label">何ページまで読み進めましたか？</p>
+                            <p class="label">進捗
+                            <el-tooltip class="" effect="light" content="読みすすめたページ数に更新してください。" placement="top-end">
+                                <i class="el-icon-question"></i>
+                            </el-tooltip>
+                            </p>
                             <el-slider 
                                 v-model="bookUserDetail.progress"
                                 :min=0
@@ -40,11 +44,19 @@
                             >
                             </el-switch>
                         </div>
-                        <p class="label" style="padding-top:2em;">書籍メモ：気づいたことや学んだことを記載しておきましょう</p>
+                        <p class="label" style="margin-top:2em;">書籍メモ
+                                                                 <el-tooltip class="" effect="light" content="学んだことや共有したいことをメモしておきましょう。" placement="top-end">
+                                                                     <i class="el-icon-question"></i>
+                                                                 </el-tooltip>
+                                                                 <el-link v-if="refFlg" type="success" style="margin-left:1em;" @click="switchArea()">編集</el-link>
+                                                                 <el-link v-if="!refFlg" type="success" style="margin-left:1em;" @click="switchArea()">キャンセル</el-link>
+                        </p>
                         <!-- <markdown v-model="memo1"/> -->
+                        <p v-if="refFlg" style="white-space:pre-wrap; word-wrap:break-word;" class="descriptionArea">{{bookUserDetail.memo}}</p>
                         <el-input
+                            v-if="!refFlg"
                             type="textarea"
-                            :rows="2"
+                            :rows="5"
                             placeholder="Please input"
                             v-model="bookUserDetail.memo">
                         </el-input>
@@ -77,7 +89,8 @@
                         >
                             <template slot-scope="scope">
                                 <div v-if="scope.row.progress > 0">{{scope.row.progress}}ページ読み進めました！</div> 
-                                <div v-else>{{scope.row.progress * (-1)}}ページ戻りました。</div> 
+                                <div v-else-if="scope.row.progress < 0">{{scope.row.progress * (-1)}}ページ戻りました。</div> 
+                                <div v-else-if="scope.row.progress == 0">ページ数は変わっていません。</div> 
                             </template>
                         </el-table-column>
                     </el-table>            
@@ -113,7 +126,9 @@
                 userProgressList: [],
                 bookUserRequest: {},
                 userProgressRequest: {},
-                loading:false
+                loading:false,
+                refFlg: true,
+                tmpMemo: undefined,
             }
         },
         created: function () {
@@ -198,7 +213,18 @@
                 if(progress == 0) return 0
                 if(progress == pageCount) return 2
                 return 1
-            }
+            },
+            switchArea: function() {
+                if(this.refFlg) {
+                    //参照からフォームへ遷移
+                    this.tmpMemo = this.bookUserDetail.memo
+                } else {
+                    this.bookUserDetail.memo = this.tmpMemo 
+                    this.tmpMemo = undefined
+                }
+                this.refFlg = !this.refFlg
+            },
+
         }
     }
 </script>
