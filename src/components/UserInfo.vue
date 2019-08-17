@@ -1,10 +1,12 @@
 <template>
     <el-row>
-        <navmenu index="1"/>
+        <navmenu :index="navIndex" />
         <el-col :span="24" >
             <el-card class="box-card">
                 <div slot="header" class="clearfix">
-                    <span>マイページ</span>
+                    <span>
+                        <slot name="header"> {{userDetail.uname}}さんのページ </slot>
+                    </span>
                 </div>
                 <el-col :span="9" :offset="2">
                     <div class="detailArea">
@@ -19,37 +21,38 @@
                             <!-- https://qiita.com/koji77/items/435c2410d9fd7d622f4c -->
                             <p v-if="refFlg" style="white-space:pre-wrap; word-wrap:break-word;" class="descriptionArea">{{userDetail.description}}</p>
                             <el-input v-if="!refFlg" type="textarea" :rows="5" class="userNameArea" v-model="tmpDescription"></el-input>
-                            <div id="update-button-area">
-                                <el-button
-                                    v-if="refFlg" 
-                                    id="modify-button"
-                                    size="mini"
-                                    type="success"
-                                    plain
-                                    @click="switchArea"
-                                >編集
-                                </el-button>
-                                <el-button
-                                    v-if="!refFlg" 
-                                    id="cancel-button"
-                                    size="mini"
-                                    type="info"
-                                    plain
-                                    @click="switchArea"
-                                >キャンセル
-                                </el-button>
-                                <el-button
-                                    v-if="!refFlg" 
-                                    id="update-button"
-                                    size="mini"
-                                    type="success"
-                                    plain
-                                    @click="updateUser"
-                                >更新
-                                </el-button>
-                            </div>
+                            <template v-if="!userRefFlg"> 
+                                <div id="update-button-area">
+                                    <el-button
+                                        v-if="refFlg" 
+                                        id="modify-button"
+                                        size="mini"
+                                        type="success"
+                                        plain
+                                        @click="switchArea"
+                                    >編集
+                                    </el-button>
+                                    <el-button
+                                        v-if="!refFlg" 
+                                        id="cancel-button"
+                                        size="mini"
+                                        type="info"
+                                        plain
+                                        @click="switchArea"
+                                    >キャンセル
+                                    </el-button>
+                                    <el-button
+                                        v-if="!refFlg" 
+                                        id="update-button"
+                                        size="mini"
+                                        type="success"
+                                        plain
+                                        @click="updateUser"
+                                    >更新
+                                    </el-button>
+                                </div>
+                            </template>
                         </div>
-
                     </div>
                 </el-col>
                 <el-col :span="9" :offset="0">
@@ -114,7 +117,7 @@
     import firebase from 'firebase'
 
     export default {
-        name: 'MyPage',
+        name: 'UserInfo',
         components: { Navmenu },
         data () {
             return {
@@ -146,14 +149,9 @@
                 tmpDescription: undefined,
             }
         },
-        created: async function () {
-            firebase.auth().onAuthStateChanged(user => {
-                this.user = user ? user : {}
-                if (user) {
-                    this.refresh(this.user.uid)
-                } else {
-                }
-            })
+        props: ['propuid', 'userRefFlg', 'navIndex'],
+        mounted: async function () {
+            // this.refresh(this.propuid)
         },
         computed: {
 
@@ -166,9 +164,10 @@
                 return result[0]["progress"]
             },
             refresh: async function (uid) {
+                console.log(uid)
                 this.uid = uid
-                this.attrs.dates = this.dateList
-                this.getLastMonth
+                // this.attrs.dates = this.dateList
+                // this.getLastMonth
                 await this.searchUser(uid)
                 var dt = new Date();
                 var y = dt.getFullYear();
@@ -192,6 +191,7 @@
                 const url = 'http://localhost:8090/user/'+uid
                 const res = await axios.get(url)
                 this.userDetail = res.data.muserList[0]
+                console.log(this.userDetail)
             },
             updateUser: async function () {
                 this.userRequest.uid = this.uid
@@ -227,7 +227,6 @@
                 //日付ごとに集約して、別のフィールド変数に格納
                 //https://zukucode.com/2017/05/javascript-object-sql-group-by.html
                 this.userProgressbyDateList = this.groupByYmd(this.userProgressList)
-                console.log(this.userProgressbyDateList)
                 if(this.userProgressbyDateList.length == 0) return
                 var tmpdateList = this.userProgressbyDateList.map(function(row) {
                     return [row["ymd"]]
@@ -287,7 +286,6 @@
 
                 var firstDayOfLastMonth = new Date(year, month-1, 1);
                 this.firstDay = firstDayOfLastMonth
-                console.log(this.firstDay)
             },
 
         }
