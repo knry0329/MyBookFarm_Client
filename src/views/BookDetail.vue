@@ -90,7 +90,7 @@
                             <template slot-scope="scope">
                                 <div v-if="scope.row.progress > 0">{{scope.row.progress}}ページ読み進めました！</div> 
                                 <div v-else-if="scope.row.progress < 0">{{scope.row.progress * (-1)}}ページ戻りました。</div> 
-                                <div v-else-if="scope.row.progress == 0">ページ数は変わっていません。</div> 
+                                <div v-else-if="scope.row.progress == 0"> - </div> 
                             </template>
                         </el-table-column>
                     </el-table>            
@@ -98,6 +98,10 @@
                 <el-col :span="14" :offset="6">
                     <div id="relationArea">
                         <p class="label">この本を読んでいる他のユーザ</p>
+                        <user-summary
+                            v-for="user in userList" v-bind:key="user.uid" 
+                            :uid="user.uid"
+                            :uname="user.uname"></user-summary>
                     </div>
                 </el-col>
             </el-card>
@@ -108,6 +112,7 @@
 <script>
     import axios from 'axios'
     import Navmenu from '../views/Navmenu'
+    import UserSummary from '../components/UserSummary'
     // import markdown from '../views/MarkDown'
     import bookApiConfig from '../config/bookapi'
     import dateutil from '../util/dateutil'
@@ -115,7 +120,7 @@
 
     export default {
         name: 'BookDetail',
-        components: { Navmenu },
+        components: { Navmenu, UserSummary },
         data () {
             return {
                 uid: undefined,
@@ -129,6 +134,7 @@
                 loading:false,
                 refFlg: true,
                 tmpMemo: undefined,
+                userList:[],
             }
         },
         created: function () {
@@ -150,6 +156,8 @@
                 this.searchBookUser(uid)
                 //書籍の進捗状況を確認
                 this.searchUserProgress(uid, this.isbn)
+                //同じ本を読んでいるユーザを検索
+                this.searchUserOnIsbn(this.isbn)
             },
             searchUserProgress: async function(uid, isbn) {
                 const url = 'http://localhost:8090/user/progress/'+uid
@@ -224,6 +232,17 @@
                 }
                 this.refFlg = !this.refFlg
             },
+            searchUserOnIsbn: async function(isbn) {
+                const url = 'http://localhost:8090/user/search?isbn='+this.isbn
+                const res = await axios.get(url)
+                var result = res.data.muserList.filter(val => {
+                    return val.uid !== this.uid
+                })
+                this.userList = result
+                // this.userList = res.data.muserList
+                console.log(this.userList.muserList)
+
+            }
 
         }
     }

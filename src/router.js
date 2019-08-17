@@ -63,7 +63,15 @@ let router = new Router({
       // eslint-disable-next-line no-unused-vars
       component: () => import(/* webpackChunkName: "bookDetail" */ './views/BookDetail.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/userDetail/:uid',
+      name: 'userDetail',
+      // eslint-disable-next-line no-unused-vars
+      component: () => import(/* webpackChunkName: "userDetail" */ './views/UserDetail.vue'),
+      meta: { requiresAuth: true }
     }
+
   ]
 })
 
