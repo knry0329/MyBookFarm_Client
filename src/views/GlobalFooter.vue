@@ -1,7 +1,7 @@
 <template>
     <footer>
         <div id="global-footer">
-            © 2019 KANARY ALL RIGHTS RESERVED
+            © 2019 kanary
         </div>
     </footer>
 </template>

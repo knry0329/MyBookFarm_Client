@@ -47,19 +47,22 @@ let router = new Router({
       path: '/mybook',
       name: 'mybook',
       // eslint-disable-next-line no-unused-vars
-      component: () => import(/* webpackChunkName: "mybook" */ './views/MyBook.vue')
+      component: () => import(/* webpackChunkName: "mybook" */ './views/MyBook.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/mypage',
       name: 'mypage',
       // eslint-disable-next-line no-unused-vars
-      component: () => import(/* webpackChunkName: "mypage" */ './views/MyPage.vue')
+      component: () => import(/* webpackChunkName: "mypage" */ './views/MyPage.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/bookDetail/:isbn',
       name: 'bookDetail',
       // eslint-disable-next-line no-unused-vars
-      component: () => import(/* webpackChunkName: "bookDetail" */ './views/BookDetail.vue')
+      component: () => import(/* webpackChunkName: "bookDetail" */ './views/BookDetail.vue'),
+      meta: { requiresAuth: true }
     }
   ]
 })

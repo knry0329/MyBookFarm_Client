@@ -53,6 +53,7 @@
                                 id="update-button"
                                 size="mini"
                                 type="success"
+                                plain
                                 v-on:click="updateUserBook()"
                             >更新
                             </el-button>

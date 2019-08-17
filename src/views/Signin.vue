@@ -28,7 +28,7 @@
         methods: {
             signIn: async function () {
                 await firebase.auth().signInWithEmailAndPassword(this.username, this.password)
-                    .then(() => this.$router.push('/searchbook'))
+                    .then(() => this.$router.push('/mypage'))
                     .catch(error => {
                         this.$message({
                             showClose: true,

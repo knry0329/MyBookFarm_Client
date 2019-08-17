@@ -25,6 +25,7 @@
                                     id="modify-button"
                                     size="mini"
                                     type="success"
+                                    plain
                                     @click="switchArea"
                                 >編集
                                 </el-button>
@@ -33,6 +34,7 @@
                                     id="cancel-button"
                                     size="mini"
                                     type="info"
+                                    plain
                                     @click="switchArea"
                                 >キャンセル
                                 </el-button>
@@ -41,6 +43,7 @@
                                     id="update-button"
                                     size="mini"
                                     type="success"
+                                    plain
                                     @click="updateUser"
                                 >更新
                                 </el-button>

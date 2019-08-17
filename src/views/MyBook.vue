@@ -32,6 +32,7 @@
                             <el-button
                                 size="mini"
                                 type="success"
+                                plain
                                 v-on:click="gotoDetail(scope.row.isbn.isbn)"
                             >詳細
                                 <!-- <router-link :to="{ name: 'bookDetail', params: { isbn: scope.row.Item.isbn }}">詳細</router-link> -->

@@ -4,9 +4,9 @@
         class="el-menu-demo"
         mode="horizontal"
         @select="handleSelect"
-        background-color="#95dc4e"
+        background-color="#bfea95"
         text-color="#fff"
-        active-text-color="#2b470e"
+        active-text-color="#6ab123"
         router>
         <el-menu-item class="el-menu" index="1" :route="{name: 'mypage'}">My Page</el-menu-item>
         <el-menu-item class="el-menu" index="2" :route="{name: 'searchbook'}">Search Book</el-menu-item>

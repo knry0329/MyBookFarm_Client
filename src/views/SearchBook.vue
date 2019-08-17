@@ -22,6 +22,7 @@
                     <el-col :span="24">
                         <el-button
                             type="success"
+                            plain
                             @click="searchBook">検索</el-button>
                     </el-col>
                 </el-row>
@@ -63,7 +64,8 @@
                         <template slot-scope="scope">
                             <el-button
                                 size="mini"
-                                type="danger"
+                                type="success"
+                                plain
                                 :disabled="scope.row.volumeInfo.industryIdentifiers==undefined || scope.row.volumeInfo.industryIdentifiers.length ==0"
                                 @click="registbook(scope.row.volumeInfo.industryIdentifiers[0].identifier)">MyBookに追加</el-button>
                         </template>
