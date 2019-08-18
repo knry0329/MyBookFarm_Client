@@ -1,5 +1,5 @@
 <template>
-    <book-info ref="bookInfo" :propuid="uid" :propisbn="isbn" :userRefFlg="userRefFlg" navIndex=""></book-info>
+    <book-info ref="bookInfo" :propuid="uid" :propisbn="isbn" :userRefFlg="userRefFlg" navIndex="3"></book-info>
 </template>
 
 <script>
@@ -8,7 +8,7 @@
     import firebase from 'firebase'
 
     export default {
-        name: 'BookDetail',
+        name: 'MyBookDetail',
         components: { BookInfo },
         data () {
             return {
@@ -22,9 +22,9 @@
                 this.user = user ? user : {}
                 if (user) {
                     this.uid = this.user.uid
-                    this.userRefFlg = true
+                    this.userRefFlg = false
                     this.isbn = this.$route.params.isbn
-                    this.$refs.bookInfo.refresh(this.$route.params.uid)
+                    this.$refs.bookInfo.refresh(this.uid)
                 } else {
                 }
             })

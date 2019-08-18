@@ -8,7 +8,7 @@
                         <slot name="header"> {{userDetail.uname}}さんのページ </slot>
                     </span>
                 </div>
-                <el-col :span="9" :offset="2">
+                <el-col :span="8" :offset="2">
                     <div class="detailArea">
                         
                         <el-avatar id="avatar" :size="150" :src="circleUrl">
@@ -55,7 +55,7 @@
                         </div>
                     </div>
                 </el-col>
-                <el-col :span="9" :offset="0">
+                <el-col :span="8" :offset="4">
                     <div class="detailArea">
                         <div class="block">
                             <p class="demonstration label">進捗カレンダー
@@ -100,7 +100,20 @@
                             <div class="square_5 hanrei"></div>
                             <div class="hanrei">　多い　</div>
                         </div>
-                        <p>書籍メモ</p>
+                    </div>
+                </el-col>
+                <el-col :span="20" :offset="2">
+                    <div class="userBook">
+                        <p class="label">
+                            <slot name="userBook"> {{userDetail.uname}}さんが読んでいる本 </slot>
+                        </p>
+                        <!-- vforつかって、componentを回す感じだと思う。 -->
+                        <div class="userBookList" v-for="bookinfo in bookinfoList" v-bind:key="bookinfo.bookinfo.id">
+                            <img v-if="'imageLinks' in bookinfo.bookinfo.volumeInfo" :src="bookinfo.bookinfo.volumeInfo.imageLinks.thumbnail" />
+                            <el-link type="success" @click="gotoBookDetail(uid, bookinfo.isbn.isbn)">
+                                <p>{{bookinfo.bookinfo.volumeInfo.title}}</p>
+                            </el-link>
+                        </div>
                     </div>
                 </el-col>
             </el-card>
@@ -147,9 +160,12 @@
                 userRequest: {},
                 tmpUname: undefined,
                 tmpDescription: undefined,
+                isbnList: [],
+                bookinfoList: [],
+                bookList: [],
             }
         },
-        props: ['propuid', 'userRefFlg', 'navIndex'],
+        props: ['myuid', 'userRefFlg', 'navIndex'],
         mounted: async function () {
             // this.refresh(this.propuid)
         },
@@ -175,7 +191,57 @@
                 var yyyymm = y + '' + m
                 await this.searchUserProgress(uid, yyyymm)
 
+                await this.searchUserBook(uid)
+
             },
+            searchUserBook: async function(uid) {
+                const res = await axios.get('http://localhost:8090/book/'+uid)
+                this.isbnList = res.data.rbookUserList
+                var tmpList = []
+                await this.isbnList.forEach(async ob => {
+                    ob = this.statusToLabel(ob)
+                    var tmpbookinfo = {}
+                    tmpbookinfo.isbn = ob
+                    tmpbookinfo.bookinfo = await this.searchBookIsbn(ob.isbn)
+                    if(tmpbookinfo.bookinfo.volumeInfo.authors) {
+                        tmpbookinfo.bookinfo.volumeInfo.authors = tmpbookinfo.bookinfo.volumeInfo.authors.join(',')
+                    }
+                    tmpList.push(tmpbookinfo)
+                })
+                this.bookinfoList = tmpList
+                console.log(this.bookinfoList)
+            },
+            searchBookIsbn: async function (isbn) {
+                const url = 
+                    bookApiConfig.urlGoogleBooks
+                    + '?q=isbn:'
+                    + isbn
+                console.log('url : '+ url)
+                const res = await axios.get(url)
+                console.log('res : ' + res)
+                this.bookList.push(res.data.items[0])
+                return res.data.items[0]
+            },
+            statusToLabel: function(ob) {
+                var label
+                switch(ob.status){
+                case "0":
+                    label="未読"
+                    break
+                case "1":
+                    label="読書中"
+                    break
+                case "2":
+                    label="読了"
+                    break
+                default:
+                    break
+                }
+                ob.label=label
+                return ob
+            },
+
+
             addStyleTextColor: function(day) {
                 if (day.weekday === 1) {
                     return {
@@ -287,7 +353,15 @@
                 var firstDayOfLastMonth = new Date(year, month-1, 1);
                 this.firstDay = firstDayOfLastMonth
             },
-
+            gotoBookDetail: function(uid, isbn) {
+                //引数のuidとpropsのmyuidが一致すればmybookdetail、そうでなければbookdetail
+                if(uid === this.myuid) {
+                    this.$router.push({ name: 'myBookDetail', params: { isbn: isbn }})
+                } else {
+                    this.$router.push({ name: 'bookDetail', params: { uid: uid, isbn:isbn }}) 
+                }
+            },
+            
         }
     }
 </script>
@@ -295,9 +369,14 @@
 <style scoped lang="scss">
     @import "../styles/base";
     @import "../styles/colors";
+    .userBookList {
+        text-align:center;
+        display: inline-block;
+        margin:1em;
+    }
     .detailArea {
         text-align:left;
-        padding-left:10em;
+        // padding-left:10em;
     }
     .box-card {
         padding-bottom: 200px;
@@ -349,23 +428,11 @@
     .label {
         border-bottom: solid 1px #efefef;
     }
-
-    // .detailItem {
-    //     float: right;
-    // }
-    // .detailArea {
-    //     overflow: hidden;
-    // }
-    // #avatar {
-    //     margin-top:10px;
-    // }
-    // #update-button {
-    //     float:right;
-    //     display:block;
-    //     margin: 0 0 0 auto;
-    // }
     #update-button-area {
         text-align: left;
+    }
+    .userBook {
+        text-align:left;
     }
 
 </style>

@@ -4,7 +4,7 @@
         <el-col :span="24" >
             <el-card class="box-card">
                 <div slot="header" class="clearfix">
-                    <span>My書籍</span>
+                    <span>マイ書籍</span>
                 </div>
                 <el-table
                     :data="bookinfoList"
@@ -59,7 +59,7 @@
     import firebase from 'firebase'
 
     export default {
-        name: 'MyBook',
+        name: 'MyBookList',
         components: { Navmenu },
         data () {
             return {
@@ -144,7 +144,7 @@
             //     this.bookRequest.address = undefined
             // },
             gotoDetail: function (isbn) {
-                this.$router.push({ name: 'bookDetail', params: { isbn: isbn }})
+                this.$router.push({ name: 'myBookDetail', params: { isbn: isbn }})
             }
         }
     }

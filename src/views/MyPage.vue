@@ -1,6 +1,7 @@
 <template>
-    <user-info ref="userInfo" :propuid="uid" :userRefFlg="userRefFlg" navIndex="1" >
+    <user-info ref="userInfo" :myuid="uid" :userRefFlg="userRefFlg" navIndex="1" >
         <span slot="header">マイページ</span>
+        <p slot="userBook">マイ本棚</p>
     </user-info>
 </template>
 
@@ -19,7 +20,6 @@
             return {
                 uid: undefined,
                 userRefFlg: undefined
-                //サーバから取得したユーザ情報
             }
         },
         created: async function () {
