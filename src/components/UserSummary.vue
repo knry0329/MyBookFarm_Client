@@ -31,12 +31,10 @@ export default {
 
 </script>
 <style lang="scss">
-    .user-summary-detail {
-        text-align: center;
-        margin: 1em;
-    }
 
     .user-summary {
         display: inline-block;
+        text-align: center;
+        margin: 1em;
     }
 </style>
