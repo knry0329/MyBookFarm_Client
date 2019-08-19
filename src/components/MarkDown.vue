@@ -2,12 +2,11 @@
 <script src="https://unpkg.com/lodash@4.16.0"></script>
 
 <template>
-    <div id="editor">
-        <textarea :value="memo" @input="update"></textarea>
-        <div v-html="compiledMarkdown"></div>
-    </div>
+  <div id="editor">
+    <textarea :value="memo" @input="update"></textarea>
+    <div v-html="compiledMarkdown"></div>
+  </div>
 </template>
-
 
 <script>
 

@@ -1,15 +1,15 @@
 <template>
-    <footer>
-        <div id="global-footer">
-            © 2019 kanary
-        </div>
-    </footer>
+  <footer>
+    <div id="global-footer">
+      © 2019 kanary
+    </div>
+  </footer>
 </template>
 
 <script>
-    export default {
-        name: 'GlobalFooter'
-    }
+export default {
+  name: 'GlobalFooter'
+}
 </script>
 
 <style scoped lang="scss">

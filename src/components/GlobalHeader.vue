@@ -1,13 +1,13 @@
 <template>
-    <div class="global-header">
-        <span class="global-header-label">MyBookFarm</span>
-    </div>
+  <div class="global-header">
+    <span class="global-header-label">MyBookFarm</span>
+  </div>
 </template>
 
 <script>
-    export default {
-        name: 'GlobalHeader'
-    }
+export default {
+  name: 'GlobalHeader'
+}
 </script>
 
 <style scoped lang="scss">
