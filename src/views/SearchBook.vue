@@ -79,7 +79,7 @@ import axios from 'axios'
 import Navmenu from '../components/Navmenu'
 import bookApiConfig from '../config/bookapiconfig'
 import bookApi from '../api/bookapi'
-
+import serverApi from '../api/serverapi'
 import firebase from 'firebase'
 
 export default {
@@ -105,14 +105,10 @@ export default {
   },
   methods: {
     refresh: async function () {
-      // const res = await axios.get('http://localhost:8090/')
-      // this.currencies = res.data.currencies
-      // this.request.name = undefined
-      // this.request.symbol = undefined
     },
-    searchBook: function () {
+    searchBook: async function () {
       // const url = 'https://www.googleapis.com/books/v1/volumes?q=' + this.request.bookName
-      const res = bookApi.searchBook(this.bookRequest.bookName)
+      const res = await bookApi.searchBook(this.bookRequest.bookName)
       // const newItems = res.data.items.filter(n => n.volumeInfo.industryIdentifiers !== undefined)
       // res.data.items = newItems
       res.data.items.forEach((val) => {
@@ -140,9 +136,8 @@ export default {
       this.bookRequest.isbn = undefined
     },
     registbook: async function (isbn) {
-      console.log(this.bookRequest)
       this.bookRequest.isbn = isbn
-      await axios.post('http://localhost:8090/book', this.bookRequest)
+      await serverApi.registUserBook(this.bookRequest)
       await this.refresh()
       this.$message({
         showClose: true,

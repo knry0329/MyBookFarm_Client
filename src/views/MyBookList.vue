@@ -52,6 +52,7 @@ import axios from 'axios'
 import Navmenu from '../components/Navmenu'
 import firebase from 'firebase'
 import bookApi from '../api/bookapi'
+import serverApi from '../api/serverapi'
 
 export default {
   name: 'MyBookList',
@@ -79,7 +80,7 @@ export default {
   },
   methods: {
     refresh: async function (uid) {
-      const res = await axios.get('http://localhost:8090/book/'+uid)
+      const res = await serverApi.searchUserBook(uid)
       this.isbnList = res.data.rbookUserList
       let tmpList = []
       await this.isbnList.forEach(async ob => {
@@ -119,18 +120,6 @@ export default {
       ob.label=label
       return ob
     },
-    // bookDetail: async function (isbn) {
-    //     this.bookRequest.isbn = isbn
-    //     await axios.get('http://localhost:8090/book', this.bookRequest)
-    //     await this.refresh()
-    //     this.$message({
-    //         showClose: true,
-    //         message: 'get book Success!',
-    //         type: 'success'
-    //     })
-    //     this.bookRequest.isbn = undefined
-    //     this.bookRequest.address = undefined
-    // },
     gotoDetail: function (isbn) {
       this.$router.push({ name: 'myBookDetail', params: { isbn: isbn }})
     }

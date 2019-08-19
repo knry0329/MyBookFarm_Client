@@ -8,6 +8,7 @@
 import axios from 'axios'
 import BookInfo from '../components/BookInfo'
 import firebase from 'firebase'
+import serverApi from '../api/serverapi'
 
 export default {
   name: 'BookDetail',
@@ -35,8 +36,7 @@ export default {
   },
   methods: {
     searchUser: async function(uid) {
-      const url = 'http://localhost:8090/user/'+uid
-      const res = await axios.get(url)
+      const res = await serverApi.searchUser(uid)
       this.userDetail = res.data.muserList[0]
     }
   }

@@ -137,6 +137,7 @@ import UserSummary from '../components/UserSummary'
 import dateutil from '../util/dateutil'
 import firebase from 'firebase'
 import bookApi from '../api/bookapi'
+import serverApi from '../api/serverapi'
 
 export default {
   name: 'BookInfo',
@@ -181,8 +182,7 @@ export default {
       this.searchUserOnIsbn(this.isbn)
     },
     searchUserProgress: async function(uid, isbn) {
-      const url = 'http://localhost:8090/user/progress/'+uid
-      const res = await axios.get(url)
+      const res = await serverApi.searchUserProgress(uid)
       this.userProgressList = res.data.tuserProgressList.filter(obj => obj.isbn == isbn)
 
     },
@@ -191,8 +191,7 @@ export default {
       this.bookDetail = res.data.items[0].volumeInfo
     },
     searchBookUser: async function (uid) {
-      const url = 'http://localhost:8090/book/'+uid+'/'+this.isbn
-      const res = await axios.get(url)
+      const res = await serverApi.searchBookUser(uid, this.isbn)
       this.bookUserDetail = res.data.rbookUserList[0]
       this.beforeProgress = res.data.rbookUserList[0].progress
     },
@@ -203,8 +202,7 @@ export default {
       this.bookUserRequest.progress = this.bookUserDetail.progress
       this.bookUserRequest.status = this.updateStatus(this.getPage(), this.bookUserDetail.progress)
       this.bookUserRequest.memo = this.bookUserDetail.memo
-      const url = 'http://localhost:8090/book'
-      const res = await axios.put(url, this.bookUserRequest)
+      const res = await serverApi.updateUserBook(this.bookUserRequest)
                 
       this.userProgressRequest.uid = this.uid
       this.userProgressRequest.ymd = dateutil.formatDate(new Date(), 'YYYY-MM-DD hh:mm:ss')
@@ -212,8 +210,7 @@ export default {
       this.userProgressRequest.isbn = this.isbn
       let nowProgress = this.bookUserRequest.progress - this.beforeProgress
       this.userProgressRequest.progress = nowProgress
-      const url_progress = 'http://localhost:8090/user/progress'
-      const res_progress = await axios.post(url_progress, this.userProgressRequest)
+      const res_progress = serverApi.registUserProgress(this.userProgressRequest)
 
       this.bookRequest = {}
       this.userProgressRequest = {}
@@ -249,8 +246,7 @@ export default {
       this.refFlg = !this.refFlg
     },
     searchUserOnIsbn: async function(isbn) {
-      const url = 'http://localhost:8090/user/search?isbn='+this.isbn
-      const res = await axios.get(url)
+      const res = await serverApi.searchUserOnIsbn(isbn)
       let result = res.data.muserList.filter(val => {
         return val.uid !== this.uid
       })

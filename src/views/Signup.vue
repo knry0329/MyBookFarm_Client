@@ -19,6 +19,7 @@
 <script>
 import firebase from 'firebase'
 import axios from 'axios'
+import serverApi from '../api/serverapi'
 
 export default {
   name: 'Signup',
@@ -67,7 +68,7 @@ export default {
       this.userRequest.uid = uid
       this.userRequest.uname = uid
       this.userRequest.description = ''
-      await axios.post('http://localhost:8090/user', this.userRequest)
+      await serverApi.registUser(this.userRequest)
       this.userRequest = {}
     }
   }

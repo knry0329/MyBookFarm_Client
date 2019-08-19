@@ -125,6 +125,7 @@
 import axios from 'axios'
 import Navmenu from '../components/Navmenu'
 import bookApi from '../api/bookapi'
+import serverApi from '../api/serverapi'
 
 export default {
   name: 'UserInfo',
@@ -192,7 +193,7 @@ export default {
 
     },
     searchUserBook: async function(uid) {
-      const res = await axios.get('http://localhost:8090/book/'+uid)
+      const res = await serverApi.searchUserBook(uid)
       this.isbnList = res.data.rbookUserList
       let tmpList = []
       await this.isbnList.forEach(async ob => {
@@ -244,8 +245,7 @@ export default {
       }
     },
     searchUser: async function (uid) {
-      const url = 'http://localhost:8090/user/'+uid
-      const res = await axios.get(url)
+      const res = await serverApi.searchUser(uid)
       this.userDetail = res.data.muserList[0]
       console.log(this.userDetail)
     },
@@ -253,9 +253,7 @@ export default {
       this.userRequest.uid = this.uid
       this.userRequest.uname = this.tmpUname
       this.userRequest.description = this.tmpDescription
-      const url = 'http://localhost:8090/user'
-      await axios.put(url, this.userRequest)
-
+      await serverApi.updateUser(this.userRequest)
       this.$message({
         showClose: true,
         message: 'Update Success!',
@@ -267,8 +265,7 @@ export default {
 
     },
     searchUserProgress: async function (uid, yyyymm) {
-      const url = 'http://localhost:8090/user/progress/'+uid+ '/'+yyyymm
-      const res = await axios.get(url)
+      const res = await serverApi.searchUserProgressYYYYMM(uid, yyyymm)
 
       //日付のフォーマット
       let tmpList = []
