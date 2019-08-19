@@ -1,9 +1,13 @@
 <template>
     <div class="user-summary">
-        <el-avatar id="avatar" :size="50" :src="circleUrl">
-        </el-avatar>
         <el-link type="success" @click="gotoUserDetail(uid)">
-            <span>{{uname}}</span>
+            <div class="user-summary-detail">
+                <el-avatar id="avatar" :size="50" :src="circleUrl">
+                </el-avatar>
+                <div>
+                    <span>{{uname}}</span>
+                </div>
+            </div>
         </el-link>
     </div>
 </template>
@@ -27,6 +31,12 @@
 
 </script>
 <style lang="scss">
+    .user-summary-detail {
+        text-align: center;
+        margin: 1em;
+    }
 
-
+    .user-summary {
+        display: inline-block;
+    }
 </style>

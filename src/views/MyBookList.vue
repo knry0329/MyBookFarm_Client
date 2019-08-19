@@ -54,7 +54,7 @@
 /* eslint-disable no-console */
 
     import axios from 'axios'
-    import Navmenu from '../views/Navmenu'
+    import Navmenu from '../components/Navmenu'
     import bookApiConfig from '../config/bookapi'
     import firebase from 'firebase'
 

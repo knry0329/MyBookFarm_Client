@@ -109,9 +109,11 @@
                         </p>
                         <!-- vforつかって、componentを回す感じだと思う。 -->
                         <div class="userBookList" v-for="bookinfo in bookinfoList" v-bind:key="bookinfo.bookinfo.id">
-                            <img v-if="'imageLinks' in bookinfo.bookinfo.volumeInfo" :src="bookinfo.bookinfo.volumeInfo.imageLinks.thumbnail" />
                             <el-link type="success" @click="gotoBookDetail(uid, bookinfo.isbn.isbn)">
-                                <p>{{bookinfo.bookinfo.volumeInfo.title}}</p>
+                                <img v-if="'imageLinks' in bookinfo.bookinfo.volumeInfo" :src="bookinfo.bookinfo.volumeInfo.imageLinks.thumbnail" />
+                                <div>
+                                    {{bookinfo.bookinfo.volumeInfo.title}}
+                                </div>
                             </el-link>
                         </div>
                     </div>
@@ -125,7 +127,7 @@
 /* eslint-disable no-console */
 
     import axios from 'axios'
-    import Navmenu from '../views/Navmenu'
+    import Navmenu from '../components/Navmenu'
     import bookApiConfig from '../config/bookapi'
     import firebase from 'firebase'
 

@@ -1,5 +1,7 @@
 <template>
-    <book-info ref="bookInfo" :propuid="uid" :propisbn="isbn" :userRefFlg="userRefFlg" navIndex=""></book-info>
+    <book-info ref="bookInfo" :propuid="uid" :propisbn="isbn" :userRefFlg="userRefFlg" navIndex="">
+        <span slot="header">{{userDetail.uname}} さんの書籍詳細</span>
+    </book-info>
 </template>
 
 <script>
@@ -15,6 +17,7 @@
                 uid: undefined,
                 isbn: undefined,
                 userRefFlg: undefined,
+                userDetail:{}
             }
         },
         created: function () {
@@ -24,13 +27,18 @@
                     this.uid = this.user.uid
                     this.userRefFlg = true
                     this.isbn = this.$route.params.isbn
+                    this.searchUser(this.$route.params.uid)
                     this.$refs.bookInfo.refresh(this.$route.params.uid)
                 } else {
                 }
             })
         },
         methods: {
-
+            searchUser: async function(uid) {
+                const url = 'http://localhost:8090/user/'+uid
+                const res = await axios.get(url)
+                this.userDetail = res.data.muserList[0]
+            }
         }
     }
 </script>

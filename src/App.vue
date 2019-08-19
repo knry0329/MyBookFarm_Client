@@ -7,8 +7,8 @@
 </template>
 
 <script>
-    import GlobalHeader from './views/GlobalHeader'
-    import GlobalFooter from './views/GlobalFooter'
+    import GlobalHeader from './components/GlobalHeader'
+    import GlobalFooter from './components/GlobalFooter'
     export default {
         components: {
             GlobalHeader,

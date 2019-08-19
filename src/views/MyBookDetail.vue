@@ -1,5 +1,7 @@
 <template>
-    <book-info ref="bookInfo" :propuid="uid" :propisbn="isbn" :userRefFlg="userRefFlg" navIndex="3"></book-info>
+    <book-info ref="bookInfo" :propuid="uid" :propisbn="isbn" :userRefFlg="userRefFlg" navIndex="3">
+        <span slot="header"></span>
+    </book-info>
 </template>
 
 <script>

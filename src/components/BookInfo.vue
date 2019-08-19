@@ -3,8 +3,8 @@
         <navmenu :index="navIndex"/>
         <el-col :span="24" v-loading="loading" >
             <el-card class="box-card">
-                <div slot="header" class="clearfix">
-                    <span>書籍詳細</span>
+                <div class="clearfix">
+                    <slot name="header">マイ書籍詳細</slot>
                 </div>
                 <el-col :span="2" :offset="3">
                     <div class="imageArea">
@@ -137,7 +137,7 @@
 
 <script>
     import axios from 'axios'
-    import Navmenu from '../views/Navmenu'
+    import Navmenu from '../components/Navmenu'
     import UserSummary from '../components/UserSummary'
     import bookApiConfig from '../config/bookapi'
     import dateutil from '../util/dateutil'
