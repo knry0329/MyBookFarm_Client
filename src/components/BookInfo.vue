@@ -134,9 +134,9 @@
 import axios from 'axios'
 import Navmenu from '../components/Navmenu'
 import UserSummary from '../components/UserSummary'
-import bookApiConfig from '../config/bookapi'
 import dateutil from '../util/dateutil'
 import firebase from 'firebase'
+import bookApi from '../api/bookapi'
 
 export default {
   name: 'BookInfo',
@@ -187,11 +187,7 @@ export default {
 
     },
     searchBookIsbn: async function () {
-      const url = 
-                    bookApiConfig.urlGoogleBooks
-                    + '?q=isbn:'
-                    + this.isbn
-      const res = await axios.get(url)
+      const res = await bookApi.searchBookIsbn(this.isbn)
       this.bookDetail = res.data.items[0].volumeInfo
     },
     searchBookUser: async function (uid) {

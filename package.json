@@ -27,6 +27,8 @@
     "babel-eslint": "^10.0.1",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0-beta.6",
+    "husky": "^3.0.4",
+    "lint-staged": "^9.2.3",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.6.10"
@@ -53,5 +55,23 @@
   "browserslist": [
     "> 1%",
     "last 2 versions"
-  ]
+  ],
+
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.vue": [
+      "eslint --fix",
+      "git add"
+    ]
+
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+
 }

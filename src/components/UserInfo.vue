@@ -124,7 +124,7 @@
 
 import axios from 'axios'
 import Navmenu from '../components/Navmenu'
-import bookApiConfig from '../config/bookapi'
+import bookApi from '../api/bookapi'
 
 export default {
   name: 'UserInfo',
@@ -209,13 +209,7 @@ export default {
       console.log(this.bookinfoList)
     },
     searchBookIsbn: async function (isbn) {
-      const url = 
-                    bookApiConfig.urlGoogleBooks
-                    + '?q=isbn:'
-                    + isbn
-      console.log('url : '+ url)
-      const res = await axios.get(url)
-      console.log('res : ' + res)
+      const res = await bookApi.searchBookIsbn(isbn)
       this.bookList.push(res.data.items[0])
       return res.data.items[0]
     },

@@ -77,7 +77,8 @@
 
 import axios from 'axios'
 import Navmenu from '../components/Navmenu'
-import bookApiConfig from '../config/bookapi'
+import bookApiConfig from '../config/bookapiconfig'
+import bookApi from '../api/bookapi'
 
 import firebase from 'firebase'
 
@@ -109,15 +110,9 @@ export default {
       // this.request.name = undefined
       // this.request.symbol = undefined
     },
-    searchBook: async function () {
+    searchBook: function () {
       // const url = 'https://www.googleapis.com/books/v1/volumes?q=' + this.request.bookName
-      const url = 
-                    bookApiConfig.urlGoogleBooks
-                    + '?q='
-                    + this.bookRequest.bookName
-                    + '&maxResults=40'
-      console.log(url)
-      const res = await axios.get(url)
+      const res = bookApi.searchBook(this.bookRequest.bookName)
       // const newItems = res.data.items.filter(n => n.volumeInfo.industryIdentifiers !== undefined)
       // res.data.items = newItems
       res.data.items.forEach((val) => {
