@@ -10,12 +10,6 @@ let router = new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: Home,
-      meta: { requiresAuth: true }
-    },
-    {
       path: '/about',
       name: 'about',
       // route level code-splitting
@@ -38,7 +32,7 @@ let router = new Router({
       component: () => import(/* webpackChunkName: "singup" */ './views/Signup.vue')
     },
     {
-      path: '/signin',
+      path: '/',
       name: 'signin',
       // eslint-disable-next-line no-unused-vars
       component: () => import(/* webpackChunkName: "singin" */ './views/Signin.vue')

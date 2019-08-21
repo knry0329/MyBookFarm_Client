@@ -106,6 +106,8 @@
             <!-- vforつかって、componentを回す感じだと思う。 -->
             <div class="userBookList" v-for="bookinfo in bookinfoList" v-bind:key="bookinfo.bookinfo.id">
               <el-link type="success" @click="gotoBookDetail(uid, bookinfo.isbn.isbn)">
+                <el-badge :value="bookinfo.isbn.label" class="budge" type="success" />
+                <br/>
                 <img v-if="'imageLinks' in bookinfo.bookinfo.volumeInfo" :src="bookinfo.bookinfo.volumeInfo.imageLinks.thumbnail" />
                 <div>
                   {{bookinfo.bookinfo.volumeInfo.title}}
