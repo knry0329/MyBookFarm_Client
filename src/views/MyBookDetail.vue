@@ -26,6 +26,7 @@ export default {
         this.uid = this.user.uid
         this.userRefFlg = false
         this.isbn = this.$route.params.isbn
+        console.log(this.isbn)
         this.$refs.bookInfo.refresh(this.uid)
       } else {
       }

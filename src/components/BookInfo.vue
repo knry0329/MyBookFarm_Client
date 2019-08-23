@@ -26,9 +26,9 @@
           <div class="progressArea">
             <div class="block">
               <p class="label">進捗
-              <el-tooltip class="" effect="light" content="読みすすめたページ数に更新してください。" placement="top-end">
-                <i class="el-icon-question"></i>
-              </el-tooltip>
+                <el-tooltip class="" effect="light" content="読みすすめたページ数に更新してください。" placement="top-end">
+                  <i class="el-icon-question"></i>
+                </el-tooltip>
               </p>
               <template v-if="!userRefFlg">
                 <el-slider 
@@ -65,13 +65,13 @@
               </template>
             </div>
             <p class="label" style="margin-top:2em;">書籍メモ
-                                                     <el-tooltip class="" effect="light" content="学んだことや共有したいことをメモしておきましょう。" placement="top-end">
-                                                       <i class="el-icon-question"></i>
-                                                     </el-tooltip>
-                                                     <template v-if="!userRefFlg">
-                                                       <el-link v-if="refFlg" type="success" style="margin-left:1em;" @click="switchArea()">編集</el-link>
-                                                       <el-link v-if="!refFlg" type="success" style="margin-left:1em;" @click="switchArea()">キャンセル</el-link>
-                                                     </template>
+              <el-tooltip class="" effect="light" content="学んだことや共有したいことをメモしておきましょう。" placement="top-end">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+              <template v-if="!userRefFlg">
+                <el-link v-if="refFlg" type="success" style="margin-left:1em;" @click="switchArea()">編集</el-link>
+                <el-link v-if="!refFlg" type="success" style="margin-left:1em;" @click="switchArea()">キャンセル</el-link>
+              </template>
             </p>
             <!-- <markdown v-model="memo1"/> -->
             <p v-if="refFlg" style="white-space:pre-wrap; word-wrap:break-word;" class="descriptionArea">{{bookUserDetail.memo}}</p>

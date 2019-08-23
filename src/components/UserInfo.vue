@@ -56,10 +56,10 @@
           <div class="detailArea">
             <div class="block">
               <p class="demonstration label">進捗カレンダー
-              <el-tooltip placement="top-end" effect="light">
-                <div slot="content">たくさん本を読んだ日ほど、カレンダーの緑色が濃くなります。<br /> 草を生やしまくりましょう。</div>
-                <i class="el-icon-question"></i>
-              </el-tooltip>
+                <el-tooltip placement="top-end" effect="light">
+                  <div slot="content">たくさん本を読んだ日ほど、カレンダーの緑色が濃くなります。<br /> 草を生やしまくりましょう。</div>
+                  <i class="el-icon-question"></i>
+                </el-tooltip>
 
               </p>
               <v-calendar :attributes="attrs"

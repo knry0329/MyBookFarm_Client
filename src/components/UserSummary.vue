@@ -24,6 +24,7 @@ export default {
   props: ['uid', 'uname'],
   methods: {
     gotoUserDetail: function(uid) {
+      console.log(uid)
       this.$router.push({ name: 'userDetail', params: { uid: uid }}) 
     }
   }

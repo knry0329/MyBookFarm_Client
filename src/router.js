@@ -1,12 +1,20 @@
-/* eslint-disable */
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
 import firebase from 'firebase'
+
+import myBookDetail from './views/MyBookDetail.vue'
+import searchBook from './views/SearchBook.vue'
+import userDetail from './views/UserDetail.vue'
+import about from './views/About.vue'
+import signup from './views/Signup.vue'
+import signin from './views/Signin.vue'
+import myBookList from './views/MyBookList.vue'
+import myPage from './views/MyPage.vue'
+import bookDetail from './views/BookDetail.vue'
 
 Vue.use(Router)
 
-  let router = new Router({
+let router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -16,66 +24,57 @@ Vue.use(Router)
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue') 
+      component: about 
     },
     {
       path: '/searchbook',
       name: 'searchbook',
-      // eslint-disable-next-line no-unused-vars
-      component: () => import(/* webpackChunkName: "SearchBook" */ './views/SearchBook.vue'),
+      component: searchBook,
       meta: { requiresAuth: true }
     },
     {
       path: '/signup',
       name: 'signup',
-      // eslint-disable-next-line no-unused-vars
-      component: () => import(/* webpackChunkName: "singup" */ './views/Signup.vue')
+      component: signup
     },
     {
       path: '/',
       name: 'signin',
-      // eslint-disable-next-line no-unused-vars
-      component: () => import(/* webpackChunkName: "singin" */ './views/Signin.vue')
+      component: signin
     },
     {
       path: '/mybook',
       name: 'mybook',
-      // eslint-disable-next-line no-unused-vars
-      component: () => import(/* webpackChunkName: "mybook" */ './views/MyBookList.vue'),
+      component: myBookList,
       meta: { requiresAuth: true }
     },
     {
       path: '/mypage',
       name: 'mypage',
-      // eslint-disable-next-line no-unused-vars
-      component: () => import(/* webpackChunkName: "mypage" */ './views/MyPage.vue'),
+      component: myPage,
       meta: { requiresAuth: true }
     },
     {
       path: '/mybook/:isbn',
       name: 'myBookDetail',
-      // eslint-disable-next-line no-unused-vars
-      component: () => import(/* webpackChunkName: "bookDetail" */ './views/MyBookDetail.vue'),
+      component: myBookDetail,
       meta: { requiresAuth: true }
     },
     {
       path: '/userDetail/:uid',
       name: 'userDetail',
-      // eslint-disable-next-line no-unused-vars
-      component: () => import(/* webpackChunkName: "userDetail" */ './views/UserDetail.vue'),
+      component: userDetail,
       meta: { requiresAuth: true }
     },
     {
       path: '/bookDetail/:uid/:isbn',
       name: 'bookDetail',
-      // eslint-disable-next-line no-unused-vars
-      component: () => import(/* webpackChunkName: "bookDetail" */ './views/BookDetail.vue'),
+      component: bookDetail,
       meta: { requiresAuth: true }
     }
 
   ]
 })
-
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
@@ -85,7 +84,7 @@ router.beforeEach((to, from, next) => {
         next()
       } else {
         next({
-          path: '/signin',
+          path: '/',
           query: { redirect: to.fullPath }
         })
       }
