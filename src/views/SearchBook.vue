@@ -14,6 +14,7 @@
             <el-input
               v-model="bookRequest.bookName"
               placeholder="本のタイトルを入力"
+              @keypress.enter.native="searchBook"
               clearable>
             </el-input>
           </el-col>

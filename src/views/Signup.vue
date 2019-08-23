@@ -2,15 +2,15 @@
   <div class="signup">
     <h2>Signup</h2>
     <div class="input-form-wrapper">
-      <el-input type="text" placeholder="Username" v-model="username"/>
+      <el-input type="text" placeholder="Username" v-model="username" @keypress.enter.native="signUp"/>
     </div>
     <div class="input-form-wrapper">
-      <el-input type="password" placeholder="Password" v-model="password"/>
+      <el-input type="password" placeholder="Password" v-model="password" @keypress.enter.native="signUp"/>
     </div>
 
     <el-button @click="signUp">Register</el-button>
     <p>Do you have an account?
-    <router-link to="/signin">sign in now!!</router-link>
+      <router-link to="/signin">sign in now!!</router-link>
     </p>
 
   </div>
