@@ -13,6 +13,16 @@
                         
             <el-avatar id="avatar" :size="150" :src="circleUrl">
             </el-avatar>
+
+            <input type="file" name="photo" @change="fileChange" accept="image/*" />
+            <el-button @click="upload">アップロード</el-button>             
+
+            <div v-if="photo_url">
+              <div class="center">
+                <img :src="photo_url" width="80%" />
+              </div>
+            </div>
+
             <div class="detailItem">
               <p class="label">ユーザ名</p>
               <p v-if="refFlg" class="userNameArea">{{userDetail.uname}}</p>
@@ -128,6 +138,7 @@ import axios from 'axios'
 import Navmenu from '../components/Navmenu'
 import bookApi from '../api/bookapi'
 import serverApi from '../api/serverapi'
+import firebase from 'firebase'
 
 export default {
   name: 'UserInfo',
@@ -163,6 +174,8 @@ export default {
       isbnList: [],
       bookinfoList: [],
       bookList: [],
+      photo: null,
+      photo_url: null
     }
   },
   props: ['myuid', 'userRefFlg', 'navIndex'],
@@ -350,7 +363,47 @@ export default {
         this.$router.push({ name: 'bookDetail', params: { uid: uid, isbn: isbn }}) 
       }
     },
-            
+    // ファイルを指定した時の処理
+    fileChange: function(e) {
+      this.photo = e.target.files[0]
+    },
+    upload: function() {
+      let me = this
+      // ストレージオブジェクト作成
+      let storageRef = firebase.storage().ref()
+      // ファイルのパスを設定
+      console.log(this.photo)
+      // ファイル名の拡張子を取得
+      let fileExtension = this.getExtension(this.photo.name)
+      let mountainsRef = storageRef.child(`images/${me.uid}.${fileExtension}`)
+
+      //ファイルを正方形にリサイズする処理
+      //同じファイル名がすでにfirebase上に存在した場合、上書きする処理
+
+      // ファイルを適用してファイルアップロード開始
+      let uploadTask = mountainsRef.put(this.photo)
+      // ステータスを監視
+      uploadTask.on('state_changed', function(snapshot){
+        firebase.storage().ref().child(`images/${me.uid}.${fileExtension}`).getDownloadURL().then(url => {
+          console.log(url)
+          me.photo_url = url
+        })
+      })
+    },
+    getExtension: function(fileName) {
+      console.log(fileName)
+      let ret
+      if (!fileName) {
+        return ret
+      }
+      let fileTypes = fileName.split('.')
+      let len = fileTypes.length
+      if (len === 0) {
+        return ret
+      }
+      ret = fileTypes[len - 1]
+      return ret
+    },
   }
 }
 </script>
