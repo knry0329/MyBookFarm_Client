@@ -14,8 +14,11 @@
             <el-avatar id="avatar" :size="150" :src="circleUrl">
             </el-avatar>
 
-            <input type="file" name="photo" @change="fileChange" accept="image/*" />
-            <el-button @click="upload">アップロード</el-button>             
+            <input v-if="!refFlg" type="file" name="photo" @change="fileChange" accept="image/*" />
+            <!-- <el-upload>
+              <el-button>click to upload</el-button>
+            </el-upload> -->
+            <!-- <el-button @click="upload">アップロード</el-button>              -->
 
             <div v-if="photo_url">
               <div class="center">
@@ -372,26 +375,23 @@ export default {
       // ストレージオブジェクト作成
       let storageRef = firebase.storage().ref()
       // ファイルのパスを設定
-      console.log(this.photo)
+      let path = `images/${me.uid}.${fileExtension}`
       // ファイル名の拡張子を取得
       let fileExtension = this.getExtension(this.photo.name)
-      let mountainsRef = storageRef.child(`images/${me.uid}.${fileExtension}`)
+      let mountainsRef = storageRef.child(path)
 
-      //ファイルを正方形にリサイズする処理
-      //同じファイル名がすでにfirebase上に存在した場合、上書きする処理
-
+      //TODO ファイルを正方形にリサイズする処理
       // ファイルを適用してファイルアップロード開始
       let uploadTask = mountainsRef.put(this.photo)
       // ステータスを監視
+      // refs https://qiita.com/zaru/items/dea2bde196a42164d0bb
       uploadTask.on('state_changed', function(snapshot){
-        firebase.storage().ref().child(`images/${me.uid}.${fileExtension}`).getDownloadURL().then(url => {
-          console.log(url)
+        firebase.storage().ref().child(path).getDownloadURL().then(url => {
           me.photo_url = url
         })
       })
     },
     getExtension: function(fileName) {
-      console.log(fileName)
       let ret
       if (!fileName) {
         return ret
