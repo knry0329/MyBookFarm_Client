@@ -10,21 +10,21 @@
         </div>
         <el-col :span="8" :offset="2">
           <div class="detailArea">
-                        
-            <el-avatar id="avatar" :size="150" :src="circleUrl">
-            </el-avatar>
 
+            <!-- <el-avatar id="avatar" :size="150" fit="none" shape="square" :src="photo_url">
+            </el-avatar> -->
+            <img id="account-image" :src="photo_url" />
             <input v-if="!refFlg" type="file" name="photo" @change="fileChange" accept="image/*" />
             <!-- <el-upload>
               <el-button>click to upload</el-button>
             </el-upload> -->
             <!-- <el-button @click="upload">アップロード</el-button>              -->
 
-            <div v-if="photo_url">
+            <!-- <div v-if="photo_url">
               <div class="center">
                 <img :src="photo_url" width="80%" />
               </div>
-            </div>
+            </div> -->
 
             <div class="detailItem">
               <p class="label">ユーザ名</p>
@@ -196,10 +196,8 @@ export default {
       return result[0]['progress']
     },
     refresh: async function (uid) {
-      console.log(uid)
       this.uid = uid
-      // this.attrs.dates = this.dateList
-      // this.getLastMonth
+      await this.getAccountImage(uid)
       await this.searchUser(uid)
       let dt = new Date()
       let y = dt.getFullYear()
@@ -268,10 +266,13 @@ export default {
       console.log(this.userDetail)
     },
     updateUser: async function () {
+      //画像のアップロード
+      await this.upload()
       this.userRequest.uid = this.uid
       this.userRequest.uname = this.tmpUname
       this.userRequest.description = this.tmpDescription
       await serverApi.updateUser(this.userRequest)
+
       this.$message({
         showClose: true,
         message: 'Update Success!',
@@ -374,10 +375,20 @@ export default {
       let me = this
       // ストレージオブジェクト作成
       let storageRef = firebase.storage().ref()
-      // ファイルのパスを設定
-      let path = `images/${me.uid}.${fileExtension}`
       // ファイル名の拡張子を取得
       let fileExtension = this.getExtension(this.photo.name)
+      // ひとまずjpgに限定（拡張子を管理する場合は、DBでファイル名永続化の必要あり）
+      if (fileExtension !== 'jpg') {
+        me.$message({
+          showClose: true,
+          message: 'Please choose .jpg FileExtension .',
+          type: 'error'
+        })
+        return 
+      }
+      // ファイルのパスを設定
+      let path = `images/${me.uid}.${fileExtension}`
+
       let mountainsRef = storageRef.child(path)
 
       //TODO ファイルを正方形にリサイズする処理
@@ -404,6 +415,16 @@ export default {
       ret = fileTypes[len - 1]
       return ret
     },
+    getAccountImage: function(uid) {
+      let me = this
+      let storageRef = firebase.storage().ref().child(`images/${me.uid}.jpg`)
+      console.log(storageRef)
+      storageRef.getDownloadURL().then((url) => {
+        me.photo_url = url
+      }, 
+      me.photo_url = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+      )
+    }
   }
 }
 </script>
@@ -411,6 +432,12 @@ export default {
 <style scoped lang="scss">
     @import "../styles/base";
     @import "../styles/colors";
+    #account-image {
+      width: 150px;
+      height: 150px;
+      border-radius:400px;
+      object-fit: cover; 
+    }
     .userBookList {
         text-align:center;
         display: inline-block;
