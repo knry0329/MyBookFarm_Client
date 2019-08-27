@@ -10,7 +10,7 @@
 
     <el-button @click="signUp">Register</el-button>
     <p>Do you have an account?
-      <router-link to="/signin">sign in now!!</router-link>
+      <router-link to="/">sign in now!!</router-link>
     </p>
 
   </div>
