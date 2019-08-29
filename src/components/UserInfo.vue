@@ -1,7 +1,7 @@
 <template>
   <el-row>
     <navmenu :index="navIndex" />
-    <el-col :span="24" >
+    <el-col :span="24"  v-loading="loading">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>
@@ -142,6 +142,7 @@ import Navmenu from '../components/Navmenu'
 import bookApi from '../api/bookapi'
 import serverApi from '../api/serverapi'
 import firebase from 'firebase'
+import { isNull } from 'util'
 
 export default {
   name: 'UserInfo',
@@ -178,7 +179,8 @@ export default {
       bookinfoList: [],
       bookList: [],
       photo: null,
-      photo_url: null
+      photo_url: null,
+      loading: false
     }
   },
   props: ['myuid', 'userRefFlg', 'navIndex'],
@@ -196,6 +198,7 @@ export default {
       return result[0]['progress']
     },
     refresh: async function (uid) {
+      this.loading = true
       this.uid = uid
       await this.getAccountImage(uid)
       await this.searchUser(uid)
@@ -204,8 +207,8 @@ export default {
       let m = ('00' + (dt.getMonth()+1)).slice(-2)
       let yyyymm = y + '' + m
       await this.searchUserProgress(uid, yyyymm)
-
       await this.searchUserBook(uid)
+      this.loading = false
 
     },
     searchUserBook: async function(uid) {
@@ -372,6 +375,8 @@ export default {
       this.photo = e.target.files[0]
     },
     upload: function() {
+      console.log(this.photo)
+      if (isNull(this.photo)) return
       let me = this
       // ストレージオブジェクト作成
       let storageRef = firebase.storage().ref()
