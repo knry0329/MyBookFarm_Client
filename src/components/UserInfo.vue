@@ -10,22 +10,8 @@
         </div>
         <el-col :span="8" :offset="2">
           <div class="detailArea">
-
-            <!-- <el-avatar id="avatar" :size="150" fit="none" shape="square" :src="photo_url">
-            </el-avatar> -->
             <img id="account-image" :src="photo_url" />
             <input v-if="!refFlg" type="file" name="photo" @change="fileChange" accept="image/*" />
-            <!-- <el-upload>
-              <el-button>click to upload</el-button>
-            </el-upload> -->
-            <!-- <el-button @click="upload">アップロード</el-button>              -->
-
-            <!-- <div v-if="photo_url">
-              <div class="center">
-                <img :src="photo_url" width="80%" />
-              </div>
-            </div> -->
-
             <div class="detailItem">
               <p class="label">ユーザ名</p>
               <p v-if="refFlg" class="userNameArea">{{userDetail.uname}}</p>
@@ -75,8 +61,7 @@
                 </el-tooltip>
 
               </p>
-              <v-calendar :attributes="attrs"
-                          :columns="1"
+              <v-calendar :columns="1"
                           :max-date='new Date()'
                           :is-expanded="true"
                           @update:fromPage="move">
@@ -158,19 +143,7 @@ export default {
       userProgressbyDateList: {},
       //userProgressbyDateListの日付のみを格納したList
       dateList: [],
-      circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
       firstDay: undefined,
-      attrs: [
-        {
-          key: 'today',
-          color: 'red',
-          dot: true,
-          dates: undefined,
-          popover: {
-            label: 'メッセージを表示できます',
-          },
-        }
-      ],
       refFlg: true,
       userRequest: {},
       tmpUname: undefined,
@@ -184,12 +157,6 @@ export default {
     }
   },
   props: ['myuid', 'userRefFlg', 'navIndex'],
-  mounted: async function () {
-    // this.refresh(this.propuid)
-  },
-  computed: {
-
-  },
   methods: {
     getDateToPages: function (dateYYYYMMDD) {
       const result = this.userProgressbyDateList.filter(userProgress => {
@@ -198,18 +165,15 @@ export default {
       return result[0]['progress']
     },
     refresh: async function (uid) {
-      this.loading = true
       this.uid = uid
-      await this.getAccountImage(uid)
+      this.getAccountImage(uid)
       await this.searchUser(uid)
       let dt = new Date()
       let y = dt.getFullYear()
       let m = ('00' + (dt.getMonth()+1)).slice(-2)
       let yyyymm = y + '' + m
       await this.searchUserProgress(uid, yyyymm)
-      await this.searchUserBook(uid)
-      this.loading = false
-
+      this.searchUserBook(uid)
     },
     searchUserBook: async function(uid) {
       const res = await serverApi.searchUserBook(uid)
@@ -226,7 +190,6 @@ export default {
         tmpList.push(tmpbookinfo)
       })
       this.bookinfoList = tmpList
-      console.log(this.bookinfoList)
     },
     searchBookIsbn: async function (isbn) {
       const res = await bookApi.searchBookIsbn(isbn)
@@ -266,7 +229,6 @@ export default {
     searchUser: async function (uid) {
       const res = await serverApi.searchUser(uid)
       this.userDetail = res.data.muserList[0]
-      console.log(this.userDetail)
     },
     updateUser: async function () {
       //画像のアップロード
@@ -375,8 +337,7 @@ export default {
       this.photo = e.target.files[0]
     },
     upload: function() {
-      console.log(this.photo)
-      if (isNull(this.photo)) return
+      if (isNull(this.photo)){ return }
       let me = this
       // ストレージオブジェクト作成
       let storageRef = firebase.storage().ref()
@@ -395,8 +356,6 @@ export default {
       let path = `images/${me.uid}.${fileExtension}`
 
       let mountainsRef = storageRef.child(path)
-
-      //TODO ファイルを正方形にリサイズする処理
       // ファイルを適用してファイルアップロード開始
       let uploadTask = mountainsRef.put(this.photo)
       // ステータスを監視
@@ -423,7 +382,6 @@ export default {
     getAccountImage: function(uid) {
       let me = this
       let storageRef = firebase.storage().ref().child(`images/${me.uid}.jpg`)
-      console.log(storageRef)
       storageRef.getDownloadURL().then((url) => {
         me.photo_url = url
       }, 
