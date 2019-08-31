@@ -5,7 +5,9 @@ export default {
   searchBookIsbn: async function(isbn) {
     const url = 
     bookApiConfig.urlGoogleBooks
-    + '?q=isbn:'
+    + '?key='
+    + bookApiConfig.GoogleBooksAPIKey
+    + '&q=isbn:'
     + isbn
     const res = await axios.get(url)
     return res
@@ -14,7 +16,9 @@ export default {
   searchBook: async function (bookName) {
     const url = 
     bookApiConfig.urlGoogleBooks
-    + '?q='
+    + '?key='
+    + bookApiConfig.GoogleBooksAPIKey
+    + '&q='
     + bookName
     + '&maxResults=40'
     const res = await axios.get(url)
