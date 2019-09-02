@@ -1,7 +1,6 @@
-import globalConfig from '../config/globalconfig'
 import axios from 'axios'
 
-const SERVER_HOST = globalConfig.server_url_dev
+const SERVER_HOST = process.env.VUE_APP_SERVER_URL
 export default {
   searchUserProgress: async function(uid) {
     const url = SERVER_HOST + '/user/progress/' +uid
