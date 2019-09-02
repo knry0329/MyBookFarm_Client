@@ -405,6 +405,7 @@ export default {
         text-align:center;
         display: inline-block;
         margin:1em;
+        width:250px;
     }
     .detailArea {
         text-align:left;
