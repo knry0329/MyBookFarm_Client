@@ -55,7 +55,7 @@ https://github.com/knry0329/bitter
     * Spring Boot
     * Mybatis
     * MySQL
-    * Fｌｙway
+    * Flyway
 
 * フロントサイド
     * Vue.js
