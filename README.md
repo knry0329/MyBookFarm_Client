@@ -6,8 +6,8 @@ MyBookFarm
 githubの草を生やす機能のように、日々の本の進捗に応じてカレンダーが色づいていくことで、  
 技術書等の本を読むモチベーション維持につながるのではないかと思い、アプリを作ってみました。  
 
-herokuホスティングページは[こちら]()  
-AWSホスティングページは[こちら](http://mybookfarm.com)※AWS料金の関係で、基本的にサーバを落としています。
+AWSホスティングページは[こちら](http://mybookfarm.com)  
+※AWS料金の関係で、基本的にサーバを落としています。
 
 サーバ側のソースはこちら  
 https://github.com/knry0329/bitter
@@ -38,7 +38,7 @@ https://github.com/knry0329/bitter
 ------------
 
   * 本番環境  
-　AWS、Herokuにデプロイ
+  AWSにデプロイ
 
   * 開発環境  
   Dockerでの環境構築中
