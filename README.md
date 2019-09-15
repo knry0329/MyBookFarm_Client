@@ -64,7 +64,7 @@ https://github.com/knry0329/bitter
 使用している技術
 -----
 * サーバサイド
-    * JDK 1.8  
+    * Java(JDK 1.8)  
     * Spring Boot
     * Mybatis
     * MySQL
@@ -82,6 +82,10 @@ https://github.com/knry0329/bitter
     * Firebase Authentication
     * Firebase Storage
     * Google Books API
+
+* インフラ
+    * AWS EC2
+    * AWS Route53
 
 License
 -------
