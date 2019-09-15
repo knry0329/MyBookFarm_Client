@@ -12,12 +12,19 @@ AWSホスティングページは[こちら](http://mybookfarm.com)
 サーバ側のソースはこちら  
 https://github.com/knry0329/bitter
 
-サイトイメージ
-<img width="1440" alt="スクリーンショット 2019-09-15 14 15 11" src="https://user-images.githubusercontent.com/24874752/64916951-1ad1d880-d7c5-11e9-9c73-39dac1cec92e.png">
-<img width="1440" alt="スクリーンショット 2019-09-15 14 15 21" src="https://user-images.githubusercontent.com/24874752/64916954-2b824e80-d7c5-11e9-9c23-914e5dafbb3e.png">
-<img width="1440" alt="スクリーンショット 2019-09-15 14 15 40" src="https://user-images.githubusercontent.com/24874752/64916967-3b9a2e00-d7c5-11e9-9853-0b7c38c7448d.png">
-<img width="1440" alt="スクリーンショット 2019-09-15 14 16 05" src="https://user-images.githubusercontent.com/24874752/64916975-48b71d00-d7c5-11e9-87ba-451b476a9e74.png">
-
+サイトイメージ  
+1.　マイページ（アカウント情報）
+<img width="1440" alt="スクリーンショット 2019-09-15 14 15 11" src="https://user-images.githubusercontent.com/24874752/64916951-1ad1d880-d7c5-11e9-9c73-39dac1cec92e.png">  
+  
+2.　マイページ（My本棚）
+<img width="1440" alt="スクリーンショット 2019-09-15 14 15 21" src="https://user-images.githubusercontent.com/24874752/64916954-2b824e80-d7c5-11e9-9c23-914e5dafbb3e.png">  
+  
+3.　マイ書籍詳細
+<img width="1440" alt="スクリーンショット 2019-09-15 14 15 40" src="https://user-images.githubusercontent.com/24874752/64916967-3b9a2e00-d7c5-11e9-9853-0b7c38c7448d.png">  
+  
+4.　書籍検索
+<img width="1440" alt="スクリーンショット 2019-09-15 14 16 05" src="https://user-images.githubusercontent.com/24874752/64916975-48b71d00-d7c5-11e9-87ba-451b476a9e74.png">  
+  
 
 目次
 -----------------
